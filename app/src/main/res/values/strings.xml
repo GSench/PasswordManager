@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">PasswordManager</string>
+    <string name="select_file">Select base file</string>
+    <string name="select_path">Select folder for new base</string>
+    <string name="choose_existing_base">Choose existing password base</string>
+    <string name="choose_new_base">Choose folder for new base</string>
+    <string name="use_default_dir">Use default base path</string>
+    <string name="name">Name</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="random">Random</string>
+    <string name="random_pin">Random PIN</string>
+    <string name="add_new_account">Add new password</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="input_name_error">Input name</string>
+    <string name="input_login_error">Input login</string>
+    <string name="input_password_error">Input password</string>
+    <string name="delete_title">Delete?</string>
+    <string name="delete_msg">Delete account %1$s with login %2$s?</string>
+    <string name="login_copied">Login %s copied to clipboard</string>
+    <string name="password_copied">Password copied to clipboard</string>
+</resources>

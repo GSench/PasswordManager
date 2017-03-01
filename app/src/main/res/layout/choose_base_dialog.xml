@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="#FFF">
+
+    <Button
+        android:text="@string/choose_existing_base"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/choose_existing_btn" />
+
+    <Button
+        android:text="@string/choose_new_base"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/choose_new_btn" />
+
+    <Button
+        android:text="@string/use_default_dir"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/use_default_btn" />
+
+</LinearLayout>
