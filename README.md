@@ -14,6 +14,17 @@ Future features:
   - Build-in keyboard for app key input (for better security)
   - Beautiful design :-)
 
+## Credits
+I used:
+  - [FloatingActionButton](https://github.com/Clans/FloatingActionButton/blob/master/README.md) by Dmytro Tarianyk for drawing floating action button
+  - [FilePicker](https://github.com/Angads25/android-filepicker) by Angad Singh for file choosing
+  - [Invitrode](https://github.com/maximeroussy/invitrode) by Maxime Roussy for random word generator
+  - [Apache Commons IO](https://commons.apache.org/proper/commons-io/) by Apache
+  - [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/) by Apache
+
+## Contribution
+You are welcome to contribute!
+
 ## License
 ```
 Copyright 2017 PasswordManager GSench
