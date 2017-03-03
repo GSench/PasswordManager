@@ -43,4 +43,7 @@ dependencies {
     compile 'com.github.angads25:filepicker:1.0.9'
     compile 'com.github.maximeroussy:invitrode:1.0.10'
     compile files('libs/commons-lang3-3.5.jar')
+    compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.android.support:support-v4:24.2.1'
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
 }

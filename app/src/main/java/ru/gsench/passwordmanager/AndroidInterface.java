@@ -1,7 +1,5 @@
 package ru.gsench.passwordmanager;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 
 import org.apache.commons.io.IOUtils;
@@ -74,12 +72,6 @@ public class AndroidInterface implements SystemInterface {
     @Override
     public void deleteFile(String path) {
         new File(path).delete();
-    }
-
-    public void copyText(String text){
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("", text);
-        clipboard.setPrimaryClip(clip);
     }
 
 }

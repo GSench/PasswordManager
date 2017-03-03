@@ -105,8 +105,13 @@ public class MainPresenter {
         openAccountBase();
     }
 
+    public void editAccount(Account account){
+        saveAccountBase();
+        openAccountBase();
+    }
+
     public void removeAccount(Account account){
-        accountSystem.deleteAccount(account.getId());
+        accountSystem.deleteAccount(account);
         saveAccountBase();
         openAccountBase();
     }

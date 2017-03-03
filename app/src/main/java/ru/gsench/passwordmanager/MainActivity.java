@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,14 +12,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
@@ -29,8 +24,6 @@ import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
 
 import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import account_system.Account;
 import account_system.AccountSystem;
@@ -121,13 +114,20 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 .setPositiveButton(R.string.ok, null)
                 .setNeutralButton(R.string.cancel, null)
                 .create();
+    }
+
+    private interface AddAccDialogListener{
+        void onOkClick();
+    }
+
+    private void setOnDialogOkClick(final AddAccDialogListener listener){
         addNewAccDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 addNewAccDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onDialogOkButtonClick();
+                        listener.onOkClick();
                     }
                 });
             }
@@ -165,7 +165,17 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     public void viewAccounts(AccountSystem accounts) {
         if(accountListAdapter==null){
-            accountListAdapter=new AccountListAdapter(this, R.layout.account, accounts);
+            accountListAdapter=new AccountListAdapter(this, accounts, new AccountListAdapter.AccountListInterface() {
+                @Override
+                public void onAccountDelete(Account account) {
+                    confirmDeleteDialog(account);
+                }
+
+                @Override
+                public void onAccountEdit(Account account) {
+                    editAccount(account);
+                }
+            });
             viewHolder.accountList.setAdapter(accountListAdapter);
         } else {
             accountListAdapter.notifyDataSetChanged();
@@ -282,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         return getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE).getBoolean(WITHOUT_SYM, false);
     }
 
-    public void onAddClick(View v){
+    private void clearAddAccDialog(){
         aViewHolder.nameInput.setErrorEnabled(false);
         aViewHolder.nameInput.setError(null);
         aViewHolder.loginInput.setErrorEnabled(false);
@@ -292,39 +302,56 @@ public class MainActivity extends AppCompatActivity implements MainView {
         aViewHolder.editName.setText("");
         aViewHolder.editLogin.setText("");
         aViewHolder.editPassword.setText("");
+    }
+
+    public void onAddClick(View v){
+        clearAddAccDialog();
+        setOnDialogOkClick(new AddAccDialogListener() {
+            @Override
+            public void onOkClick() {
+                addNewAccountFromDialog();
+            }
+        });
         addNewAccDialog.show();
     }
-    
-    private void onDialogOkButtonClick(){
-        boolean ok = true;
+
+    private boolean checkAccDialogFilling(){
         if(aViewHolder.editName.getText().toString().equals("")){
             aViewHolder.nameInput.setErrorEnabled(true);
             aViewHolder.nameInput.setError(getString(R.string.input_name_error));
-            ok=false;
+            return false;
         }
         if(aViewHolder.editLogin.getText().toString().equals("")){
             aViewHolder.loginInput.setErrorEnabled(true);
             aViewHolder.loginInput.setError(getString(R.string.input_login_error));
-            ok=false;
+            return false;
         }
         if(aViewHolder.editPassword.getText().toString().equals("")){
             aViewHolder.passwordInput.setErrorEnabled(true);
             aViewHolder.passwordInput.setError(getString(R.string.input_password_error));
-            ok=false;
+            return false;
         }
-        if(ok) {
-            aViewHolder.nameInput.setErrorEnabled(false);
-            aViewHolder.nameInput.setError(null);
-            aViewHolder.loginInput.setErrorEnabled(false);
-            aViewHolder.loginInput.setError(null);
-            aViewHolder.passwordInput.setErrorEnabled(false);
-            aViewHolder.passwordInput.setError(null);
+        return true;
+    }
+    
+    private void addNewAccountFromDialog(){
+        if(checkAccDialogFilling()) {
             addNewAccDialog.cancel();
             presenter.addNewAccount(new Account(
                     presenter.getAccountCount(),
                     aViewHolder.editName.getText().toString(),
                     aViewHolder.editLogin.getText().toString(),
                     aViewHolder.editPassword.getText().toString()));
+        }
+    }
+
+    private void editAccountFromDialog(Account account){
+        if(checkAccDialogFilling()) {
+            addNewAccDialog.cancel();
+            account.setName(aViewHolder.editName.getText().toString());
+            account.setLogin(aViewHolder.editLogin.getText().toString());
+            account.setPassword(aViewHolder.editPassword.getText().toString());
+            presenter.editAccount(account);
         }
     }
 
@@ -350,84 +377,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
         return (context.checkCallingOrSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     }
 
-    //TODO editing accounts
-    private class AccountListAdapter extends ArrayAdapter<Account> {
-
-        private AccountSystem accounts;
-        private Context context;
-
-        public AccountListAdapter(Context context, int resource, AccountSystem accounts) {
-            super(context, resource, accounts.getAccounts());
-            this.accounts=accounts;
-            this.context=context;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final Account current = accounts.getAccount(position);
-            if(convertView==null){
-                convertView= LayoutInflater.from(context).inflate(R.layout.account, parent, false);
-            }
-            TextView name = (TextView) convertView.findViewById(R.id.name);
-            TextView login = (TextView) convertView.findViewById(R.id.login);
-            TextView password = (TextView) convertView.findViewById(R.id.password);
-            name.setText(current.getName());
-            name.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(isStringUrl(current.getName()))
-                    try {
-                        openURL(toURL(current.getName()));
-                    }
-                    catch (Throwable e){
-                    }
-                }
-            });
-            login.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    androidInterface.copyText(current.getLogin());
-                    Toast.makeText(MainActivity.this, getString(R.string.login_copied, current.getLogin()), Toast.LENGTH_SHORT).show();
-                }
-            });
-            password.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    androidInterface.copyText(current.getPassword());
-                    Toast.makeText(MainActivity.this, R.string.password_copied, Toast.LENGTH_SHORT).show();
-                }
-            });
-            login.setText(current.getLogin());
-            password.setText(current.getPassword());
-            ((Button)(convertView.findViewById(R.id.delete_btn))).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    confirmDeleteDialog(current);
-                }
-            });
-            return convertView;
-        }
-
-    }
-
-    //TODO to separate class
-    private void openURL(String url){
-        Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(intent);
-    }
-
-    //TODO to separate class
-    public boolean isStringUrl(String string){
-        Pattern p = Pattern.compile("^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$");
-        Matcher m = p.matcher(string);
-        return m.find();
-    }
-
-    //TODO to separate class
-    public String toURL(String str){
-        return str.startsWith("http") ? str : "http://"+str;
-    }
-
     private void confirmDeleteDialog(final Account accountToDelete){
         new AlertDialog.Builder(this)
                 .setTitle(R.string.delete_title)
@@ -446,6 +395,20 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 })
                 .create()
                 .show();
+    }
+
+    private void editAccount(final Account account){
+        clearAddAccDialog();
+        aViewHolder.editName.setText(account.getName());
+        aViewHolder.editLogin.setText(account.getLogin());
+        aViewHolder.editPassword.setText(account.getPassword());
+        setOnDialogOkClick(new AddAccDialogListener() {
+            @Override
+            public void onOkClick() {
+                editAccountFromDialog(account);
+            }
+        });
+        addNewAccDialog.show();
     }
 
 }

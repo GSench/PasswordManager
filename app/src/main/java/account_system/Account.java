@@ -27,9 +27,16 @@ public class Account{
     private String name;
     private String login;
 
-    public Account setPassword(String password) {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
-        return this;
     }
 
     private String password;

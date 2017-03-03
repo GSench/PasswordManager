@@ -69,12 +69,8 @@ public class AccountSystem {
         accounts.add(account);
     }
 
-    public void deleteAccount(int id){
-        for(Account account: accounts)
-            if(account.getId()==id){
-                accounts.remove(account);
-                break;
-            }
+    public void deleteAccount(Account account){
+        accounts.remove(account);
     }
 
 }

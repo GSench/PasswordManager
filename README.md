@@ -21,6 +21,7 @@ I used:
   - [Invitrode](https://github.com/maximeroussy/invitrode) by Maxime Roussy for random word generator
   - [Apache Commons IO](https://commons.apache.org/proper/commons-io/) by Apache
   - [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/) by Apache
+  - [Android Swipe Layout](https://github.com/daimajia/AndroidSwipeLayout) by 代码家 for swipe menu
 
 ## Contribution
 You are welcome to contribute!
