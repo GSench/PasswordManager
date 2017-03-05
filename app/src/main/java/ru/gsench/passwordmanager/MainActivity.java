@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.inputmethodservice.KeyboardView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,6 +28,7 @@ import java.io.File;
 
 import account_system.Account;
 import account_system.AccountSystem;
+import utils.CustomKeyboard;
 import utils.MyTextWatcher;
 import utils.RandomPassword;
 
@@ -45,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
     AndroidInterface androidInterface;
     MainViewHolder viewHolder;
     AddAccountViewHolder aViewHolder;
-    AlertDialog addNewAccDialog;
 
 
     @Override
@@ -67,8 +68,17 @@ public class MainActivity extends AppCompatActivity implements MainView {
         viewHolder.dialogContent.removeAllViews();
     }
 
+    private boolean dialogOpened(){
+        return viewHolder.dialogContent.getChildCount()!=0;
+    }
+
     private void setupAddAccDialog(){
         aViewHolder = new AddAccountViewHolder(this, viewHolder.main);
+        CustomKeyboard customKeyboard = new CustomKeyboard(this, aViewHolder.keyboard);
+        customKeyboard.enableHapticFeedback(true);
+        customKeyboard.registerEditText(aViewHolder.editName);
+        customKeyboard.registerEditText(aViewHolder.editLogin);
+        customKeyboard.registerEditText(aViewHolder.editPassword);
         aViewHolder.randomPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,12 +118,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 aViewHolder.passwordInput.setError(null);
             }
         });
-        addNewAccDialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.add_new_account)
-                .setView(aViewHolder.main)
-                .setPositiveButton(R.string.ok, null)
-                .setNeutralButton(R.string.cancel, null)
-                .create();
+        aViewHolder.cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeDialog();
+            }
+        });
     }
 
     private interface AddAccDialogListener{
@@ -121,15 +131,10 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     private void setOnDialogOkClick(final AddAccDialogListener listener){
-        addNewAccDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+        aViewHolder.ok.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onShow(DialogInterface dialogInterface) {
-                addNewAccDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        listener.onOkClick();
-                    }
-                });
+            public void onClick(View view) {
+                listener.onOkClick();
             }
         });
     }
@@ -182,27 +187,31 @@ public class MainActivity extends AppCompatActivity implements MainView {
         }
     }
 
-    //TODO Password dialog
-    //TODO with custom keyboard
-    //TODO with QR-code scanner
+    //TODO Add QR-code scanner
     @Override
     public void openPasswordDialog() {
-        final EditText editText = new EditText(this);
-        new AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setTitle("Input Key Phrase")
-                .setView(editText)
-                .setPositiveButton("Enter", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(presenter.isKeyPhraseCorrect(editText.getText().toString())){
-                            dialogInterface.cancel();
-                            presenter.onCorrectKeyPhraseInput();
-                        } else Toast.makeText(MainActivity.this, "Incorrect key phrase", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .create()
-                .show();
+
+        ViewGroup inputKeyLayout = (ViewGroup) getLayoutInflater().inflate(R.layout.input_key_layout, viewHolder.dialogContent, false);
+        final EditText editText = (EditText) inputKeyLayout.findViewById(R.id.edit_key);
+        inputKeyLayout.findViewById(R.id.enter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(presenter.isKeyPhraseCorrect(editText.getText().toString())){
+                    closeDialog();
+                    presenter.onCorrectKeyPhraseInput();
+                } else Toast.makeText(MainActivity.this, "Incorrect key phrase", Toast.LENGTH_SHORT).show();
+            }
+        });
+        inputKeyLayout.findViewById(R.id.scan_qr_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        CustomKeyboard customKeyboard = new CustomKeyboard(this, (KeyboardView) inputKeyLayout.findViewById(R.id.keyboard_view));
+        customKeyboard.enableHapticFeedback(true);
+        customKeyboard.registerEditText(editText);
+        showDialog(inputKeyLayout);
     }
 
     @Override
@@ -312,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 addNewAccountFromDialog();
             }
         });
-        addNewAccDialog.show();
+        showDialog(aViewHolder.main);
     }
 
     private boolean checkAccDialogFilling(){
@@ -336,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     
     private void addNewAccountFromDialog(){
         if(checkAccDialogFilling()) {
-            addNewAccDialog.cancel();
+            closeDialog();
             presenter.addNewAccount(new Account(
                     presenter.getAccountCount(),
                     aViewHolder.editName.getText().toString(),
@@ -347,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     private void editAccountFromDialog(Account account){
         if(checkAccDialogFilling()) {
-            addNewAccDialog.cancel();
+            closeDialog();
             account.setName(aViewHolder.editName.getText().toString());
             account.setLogin(aViewHolder.editLogin.getText().toString());
             account.setPassword(aViewHolder.editPassword.getText().toString());
@@ -408,7 +417,14 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 editAccountFromDialog(account);
             }
         });
-        addNewAccDialog.show();
+        showDialog(aViewHolder.main);
+    }
+
+    //TODO Edit for password input
+    @Override
+    public void onBackPressed() {
+        if(dialogOpened()) closeDialog();
+        else super.onBackPressed();
     }
 
 }

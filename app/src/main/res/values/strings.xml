@@ -20,4 +20,6 @@
     <string name="delete_msg">Delete account %1$s with login %2$s?</string>
     <string name="login_copied">Login %s copied to clipboard</string>
     <string name="password_copied">Password copied to clipboard</string>
+    <string name="scan_qr">Scan QR-code</string>
+    <string name="enter">Enter</string>
 </resources>
