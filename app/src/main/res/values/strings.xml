@@ -22,4 +22,6 @@
     <string name="password_copied">Password copied to clipboard</string>
     <string name="scan_qr">Scan QR-code</string>
     <string name="enter">Enter</string>
+    <string name="write_permission_msg">Get write permission</string>
+    <string name="write_permission_denied">Permission denied</string>
 </resources>

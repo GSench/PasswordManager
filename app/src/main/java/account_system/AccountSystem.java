@@ -61,10 +61,6 @@ public class AccountSystem {
         return accounts!=null ? accounts.size() : -1;
     }
 
-    public ArrayList<Account> getAccounts(){
-        return accounts;
-    }
-
     public void addAccount(Account account){
         accounts.add(account);
     }

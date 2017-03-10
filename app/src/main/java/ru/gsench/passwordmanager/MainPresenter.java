@@ -58,6 +58,7 @@ public class MainPresenter {
     }
 
     public void onCorrectKeyPhraseInput(){
+        saveAccountBase();
         openAccountBase();
     }
 
