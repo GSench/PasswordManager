@@ -38,11 +38,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     testCompile 'junit:junit:4.12'
-    compile files('libs/commons-io-2.4.jar')
+    compile 'commons-io:commons-io:2.5'
+    compile 'org.apache.commons:commons-lang3:3.5'
     compile 'com.github.clans:fab:1.6.1'
     compile 'com.github.angads25:filepicker:1.0.9'
     compile 'com.github.maximeroussy:invitrode:1.0.10'
-    compile files('libs/commons-lang3-3.5.jar')
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"

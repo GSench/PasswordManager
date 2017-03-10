@@ -117,10 +117,6 @@ public class MainPresenter {
         openAccountBase();
     }
 
-    public int getAccountCount(){
-        return accountSystem.getAccountsCount();
-    }
-
     //TODO Exception handling
     //TODO To separate thread
     private void saveAccountBase(){

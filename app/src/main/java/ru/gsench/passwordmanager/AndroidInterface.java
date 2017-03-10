@@ -18,8 +18,6 @@ import java.io.OutputStream;
 public class AndroidInterface implements SystemInterface {
 
     public static final String SPREF = "preferences";
-    public static final int PICK_FILE = 1;
-    public static final int PICK_DIR = 2;
 
     Context context;
 
