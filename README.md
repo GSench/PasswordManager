@@ -7,11 +7,10 @@ Main features:
   - Copy login/password by click in the app
   - Integrated random login/password generator
   - Create new password base or select existing one
+  - Build-in keyboard for app key input (for better security)
 
 Future features:
-  - Export App key as QR-code
-  - Reading App key from camera as QR-code
-  - Build-in keyboard for app key input (for better security)
+  - Base access through PIN
   - Beautiful design :-)
 
 ## Credits
