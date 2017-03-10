@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager;
+package ru.gsench.passwordmanager.windows;
 
 import android.content.Context;
 import android.text.Editable;
@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import account_system.Account;
-import utils.CustomKeyboard;
+import ru.gsench.passwordmanager.R;
 import utils.MyTextWatcher;
 import utils.RandomPassword;
 import utils.function;
@@ -23,14 +23,14 @@ public class EditAccountWindow {
     private static final String WITHOUT_SYM = "without_sym";
 
     private Context context;
-    public AddAccountViewHolder aViewHolder;
+    public EditAccountViewHolder aViewHolder;
     private WindowListener listener;
     private int currentID = -1;
 
     public EditAccountWindow(Context context, ViewGroup parent, final WindowListener listener){
         this.context=context;
         this.listener=listener;
-        aViewHolder = new AddAccountViewHolder(context, parent);
+        aViewHolder = new EditAccountViewHolder(context, parent);
         updateRandomBtnsWithPref();
         aViewHolder.randomPINCode.setOnClickListener(new View.OnClickListener() {
             @Override

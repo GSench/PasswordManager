@@ -30,7 +30,7 @@ public class MainPresenter {
     public void onStart(){
         String basePath = system.getSavedString(ACCOUNT_BASE);
         if(basePath==null){
-            view.noBaseDialog();
+            view.selectBaseWindow();
             return;
         }
         onBaseSelected(basePath);
@@ -73,7 +73,7 @@ public class MainPresenter {
         }
         accountSystem = new AccountSystem(null);
         system.saveString(ACCOUNT_BASE, path);
-        view.noKeyDialog();
+        view.newKeyWindow();
     }
 
     //TODO Exception handling
@@ -93,7 +93,8 @@ public class MainPresenter {
         }
         accountSystem = new AccountSystem(base);
         system.saveString(ACCOUNT_BASE, path);
-        view.openPasswordDialog();
+        if(base.length==0) view.newKeyWindow();
+        else view.keyInputWindow();
     }
 
     private void openAccountBase(){

@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager;
+package ru.gsench.passwordmanager.windows;
 
 /**
  * Created by Григорий Сенченок on 10.03.2017.

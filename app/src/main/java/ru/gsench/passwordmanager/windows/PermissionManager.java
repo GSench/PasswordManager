@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager;
+package ru.gsench.passwordmanager.windows;
 
 import android.Manifest;
 import android.app.Activity;
@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import ru.gsench.passwordmanager.R;
 import utils.function;
 
 /**

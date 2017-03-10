@@ -9,18 +9,17 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-
-import com.github.angads25.filepicker.controller.DialogSelectionListener;
-import com.github.angads25.filepicker.model.DialogConfigs;
-import com.github.angads25.filepicker.model.DialogProperties;
-import com.github.angads25.filepicker.view.FilePickerDialog;
 
 import java.io.File;
 
 import account_system.Account;
 import account_system.AccountSystem;
+import ru.gsench.passwordmanager.windows.AccountListAdapter;
+import ru.gsench.passwordmanager.windows.EditAccountWindow;
+import ru.gsench.passwordmanager.windows.KeyInputWindow;
+import ru.gsench.passwordmanager.windows.PermissionManager;
+import ru.gsench.passwordmanager.windows.SelectBaseWindow;
+import ru.gsench.passwordmanager.windows.WindowListener;
 import utils.CustomKeyboard;
 import utils.function;
 
@@ -56,16 +55,18 @@ public class MainActivity extends AppCompatActivity implements MainView {
         });
     }
 
-    private void showDialog(ViewGroup viewGroup){
-        closeDialog();
+    private void openWindow(ViewGroup viewGroup, boolean closeOnBackPressed){
+        closeWindow();
+        this.closeOnBackPressed=closeOnBackPressed;
         viewHolder.dialogContent.addView(viewGroup, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
-    private void closeDialog(){
+    private void closeWindow(){
         viewHolder.dialogContent.removeAllViews();
     }
 
-    private boolean dialogOpened(){
+    private boolean closeOnBackPressed = true;
+    private boolean windowOpened(){
         return viewHolder.dialogContent.getChildCount()!=0;
     }
 
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         accountWindow = new EditAccountWindow(this, viewHolder.main, new WindowListener() {
             @Override
             public void onClose() {
-                closeDialog();
+                closeWindow();
             }
         });
         keyboard.registerEditText(accountWindow.aViewHolder.editLogin);
@@ -107,77 +108,46 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
-    public void openPasswordDialog() {
-        ViewGroup inputKeyLayout = (ViewGroup) getLayoutInflater().inflate(R.layout.input_key_layout, viewHolder.dialogContent, false);
-        final EditText editText = (EditText) inputKeyLayout.findViewById(R.id.edit_key);
-        inputKeyLayout.findViewById(R.id.enter).setOnClickListener(new View.OnClickListener() {
+    public void keyInputWindow() {
+        KeyInputWindow window = new KeyInputWindow(this, viewHolder.main, new function() {
             @Override
-            public void onClick(View view) {
-                if(presenter.isKeyPhraseCorrect(editText.getText().toString())){
-                    closeDialog();
+            public void run(String... params) {
+                if(presenter.isKeyPhraseCorrect(params[0])){
+                    closeWindow();
                     presenter.onCorrectKeyPhraseInput();
                 }
             }
         });
-        keyboard.registerEditText(editText);
-        showDialog(inputKeyLayout);
+        window.setMessage(getString(R.string.input_key));
+        keyboard.registerEditText(window.viewHolder.keyEdit);
+        openWindow(window.getView(), false);
     }
 
     @Override
-    public void noBaseDialog() {
-        LinearLayout dialogLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.choose_base_dialog, viewHolder.main, false);
-        dialogLayout.findViewById(R.id.choose_existing_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                requestFile(DialogConfigs.FILE_SELECT, getString(R.string.select_file), new function() {
+    public void selectBaseWindow() {
+        SelectBaseWindow window = new SelectBaseWindow(this, viewHolder.main,
+                new function() {
                     @Override
                     public void run(String... params) {
-                        closeDialog();
+                        closeWindow();
                         presenter.onBaseSelected(params[0]);
                     }
-                });
-            }
-        });
-        dialogLayout.findViewById(R.id.choose_new_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                requestFile(DialogConfigs.DIR_SELECT, getString(R.string.select_path), new function() {
+                },
+                new function() {
                     @Override
                     public void run(String... params) {
-                        closeDialog();
+                        closeWindow();
                         presenter.onNewBaseSelected(new File(new File(params[0]), defaultBaseFileName).getAbsolutePath());
                     }
+                },
+                new function() {
+                    @Override
+                    public void run(String... params) {
+                        closeWindow();
+                        presenter.onNewBaseSelected(defaultBaseFilePath);
+                    }
                 });
-            }
-        });
-        dialogLayout.findViewById(R.id.use_default_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeDialog();
-                presenter.onNewBaseSelected(defaultBaseFilePath);
-            }
-        });
-        showDialog(dialogLayout);
-    }
-
-    private void requestFile(int selection_type, String title, final function doAfter){
-        DialogProperties properties = new DialogProperties();
-        properties.selection_mode = DialogConfigs.SINGLE_MODE;
-        properties.selection_type = selection_type;
-        properties.root = new File(DialogConfigs.DEFAULT_DIR);
-        properties.error_dir = new File(DialogConfigs.DEFAULT_DIR);
-        properties.offset = new File(DialogConfigs.DEFAULT_DIR);
-        properties.extensions = null;
-        FilePickerDialog dialog = new FilePickerDialog(MainActivity.this,properties);
-        dialog.setTitle(title);
-        dialog.setDialogSelectionListener(new DialogSelectionListener() {
-            @Override
-            public void onSelectedFilePaths(String[] files) {
-                if(files==null||files.length==0) return;
-                doAfter.run(files[0]);
-            }
-        });
-        dialog.show();
+        openWindow(window.getView(), false);
     }
 
     @Override
@@ -185,10 +155,19 @@ public class MainActivity extends AppCompatActivity implements MainView {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    //TODO new key dialog
     @Override
-    public void noKeyDialog() {
-        openPasswordDialog();
+    public void newKeyWindow() {
+        KeyInputWindow window = new KeyInputWindow(this, viewHolder.main, new function() {
+            @Override
+            public void run(String... params) {
+                presenter.isKeyPhraseCorrect(params[0]);
+                closeWindow();
+                presenter.onCorrectKeyPhraseInput();
+            }
+        });
+        window.setMessage(getString(R.string.input_new_key));
+        keyboard.registerEditText(window.viewHolder.keyEdit);
+        openWindow(window.getView(), false);
     }
 
     public void onAddClick(View v){
@@ -197,12 +176,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
             @Override
             public void run(String... params) {
                 if(accountWindow.checkAccDialogFilling()) {
-                    closeDialog();
+                    closeWindow();
                     presenter.addNewAccount(accountWindow.getAccount());
                 }
             }
         });
-        showDialog(accountWindow.getView());
+        openWindow(accountWindow.getView(), true);
     }
 
     @Override
@@ -237,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
             @Override
             public void run(String... params) {
                 if(accountWindow.checkAccDialogFilling()) {
-                    closeDialog();
+                    closeWindow();
                     Account account1 = accountWindow.getAccount();
                     account.setName(account1.getName());
                     account.setLogin(account1.getLogin());
@@ -246,17 +225,16 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 }
             }
         });
-        showDialog(accountWindow.getView());
+        openWindow(accountWindow.getView(), true);
     }
 
-    //TODO Edit for password input
     @Override
     public void onBackPressed() {
         if(keyboard.isCustomKeyboardVisible()){
             keyboard.hideCustomKeyboard();
             return;
         }
-        if(dialogOpened()) closeDialog();
+        if(windowOpened()&&closeOnBackPressed) closeWindow();
         else super.onBackPressed();
     }
 

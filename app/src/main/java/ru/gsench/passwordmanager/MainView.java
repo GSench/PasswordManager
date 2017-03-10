@@ -9,8 +9,8 @@ import account_system.AccountSystem;
 public interface MainView {
 
     public void viewAccounts(AccountSystem accounts);
-    public void openPasswordDialog();
-    public void noBaseDialog();
-    public void noKeyDialog();
+    public void keyInputWindow();
+    public void selectBaseWindow();
+    public void newKeyWindow();
 
 }

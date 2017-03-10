@@ -24,4 +24,6 @@
     <string name="enter">Enter</string>
     <string name="write_permission_msg">Get write permission</string>
     <string name="write_permission_denied">Permission denied</string>
+    <string name="input_key">Input key phrase</string>
+    <string name="input_new_key">Create new key. It can be phrase, song or poem lyrics, address, name list, etc.\nRemember your key! If you forget your key, password base will be lost and can not be restored!!!</string>
 </resources>
