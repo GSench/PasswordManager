@@ -12,5 +12,7 @@ public interface MainView {
     public void keyInputWindow();
     public void selectBaseWindow();
     public void newKeyWindow();
+    public void openPINWindow();
+    public void newPINDialog();
 
 }

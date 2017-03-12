@@ -17,6 +17,7 @@ import account_system.AccountSystem;
 import ru.gsench.passwordmanager.windows.AccountListAdapter;
 import ru.gsench.passwordmanager.windows.EditAccountWindow;
 import ru.gsench.passwordmanager.windows.KeyInputWindow;
+import ru.gsench.passwordmanager.windows.PINInputWindow;
 import ru.gsench.passwordmanager.windows.PermissionManager;
 import ru.gsench.passwordmanager.windows.SelectBaseWindow;
 import ru.gsench.passwordmanager.windows.WindowListener;
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
             public void run(String... params) {
                 if(presenter.isKeyPhraseCorrect(params[0])){
                     closeWindow();
-                    presenter.onCorrectKeyPhraseInput();
+                    presenter.afterCorrectKeyInput();
                 }
             }
         });
@@ -162,12 +163,56 @@ public class MainActivity extends AppCompatActivity implements MainView {
             public void run(String... params) {
                 presenter.isKeyPhraseCorrect(params[0]);
                 closeWindow();
-                presenter.onCorrectKeyPhraseInput();
+                presenter.afterNewKeyInput();
             }
         });
         window.setMessage(getString(R.string.input_new_key));
         keyboard.registerEditText(window.viewHolder.keyEdit);
         openWindow(window.getView(), false);
+    }
+
+    @Override
+    public void openPINWindow() {
+        PINInputWindow window = new PINInputWindow(this, viewHolder.main, new function() {
+            @Override
+            public void run(String... params) {
+                if(presenter.isPINCorrect(params[0])){
+                    closeWindow();
+                    presenter.afterCorrectPINInput();
+                }
+            }
+        });
+        openWindow(window.getView(), false);
+    }
+
+    @Override
+    public void newPINDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Create PIN?")
+                .setMessage("Create new PIN?")
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        PINInputWindow window = new PINInputWindow(MainActivity.this, viewHolder.main, new function() {
+                            @Override
+                            public void run(String... params) {
+                                closeWindow();
+                                presenter.onNewPIN(params[0]);
+                            }
+                        });
+                        dialogInterface.cancel();
+                        openWindow(window.getView(), true);
+                    }
+                })
+                .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                })
+                .setCancelable(false)
+                .create()
+                .show();
     }
 
     public void onAddClick(View v){

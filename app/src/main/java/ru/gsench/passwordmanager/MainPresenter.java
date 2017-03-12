@@ -17,6 +17,8 @@ import account_system.AccountSystem;
 public class MainPresenter {
 
     private static final String ACCOUNT_BASE = "base_path";
+    private static final String KEY = "key";
+    private static final String PIN = "pin";
 
     private MainView view;
     private SystemInterface system;
@@ -57,9 +59,29 @@ public class MainPresenter {
         return true;
     }
 
-    public void onCorrectKeyPhraseInput(){
+    public void afterCorrectKeyInput(){
+        openAccountBase();
+    }
+
+    public void afterNewKeyInput(){
         saveAccountBase();
         openAccountBase();
+        view.newPINDialog();
+    }
+
+    public void onNewPIN(String pin){
+        system.saveString(PIN, pin);
+        system.saveString(KEY, accountSystem.getKey());
+    }
+
+    public boolean isPINCorrect(String pin){
+        return pin.equals(system.getSavedString(PIN));
+    }
+
+    public void afterCorrectPINInput(){
+        String key = system.getSavedString(KEY);
+        isKeyPhraseCorrect(key);
+        afterCorrectKeyInput();
     }
 
     //TODO Exception handling
@@ -78,12 +100,6 @@ public class MainPresenter {
 
     //TODO Exception handling
     public void onBaseSelected(String path){
-        try {
-            system.createFileIfNotExist(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
         byte[] base;
         try {
             base = system.readFileFromPath(path);
@@ -93,8 +109,14 @@ public class MainPresenter {
         }
         accountSystem = new AccountSystem(base);
         system.saveString(ACCOUNT_BASE, path);
-        if(base.length==0) view.newKeyWindow();
-        else view.keyInputWindow();
+        if(base.length==0){
+            view.newKeyWindow();
+            return;
+        }
+        if(system.getSavedString(PIN)!=null)
+            view.openPINWindow();
+        else
+            view.keyInputWindow();
     }
 
     private void openAccountBase(){
