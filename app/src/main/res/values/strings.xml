@@ -28,4 +28,5 @@
     <string name="input_new_key">Create new key. It can be phrase, song or poem lyrics, address, name list, etc.\nRemember your key! If you forget your key, password base will be lost and can not be restored!!!</string>
     <string name="create_pin_title">Create pin?</string>
     <string name="create_pin_msg">You can remember key in app and input only PIN/</string>
+    <string name="pin_retry">Retry over %d sec</string>
 </resources>

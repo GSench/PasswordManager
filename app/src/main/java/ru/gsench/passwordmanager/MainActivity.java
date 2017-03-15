@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     AccountListAdapter accountListAdapter;
     MainViewHolder viewHolder;
     EditAccountWindow accountWindow;
+    PINInputWindow PINWindow;
     CustomKeyboard keyboard;
     PermissionManager permissionManager;
 
@@ -59,6 +61,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private void openWindow(ViewGroup viewGroup, boolean closeOnBackPressed){
         closeWindow();
         this.closeOnBackPressed=closeOnBackPressed;
+        viewGroup.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
         viewHolder.dialogContent.addView(viewGroup, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
@@ -173,16 +181,23 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     @Override
     public void openPINWindow() {
-        PINInputWindow window = new PINInputWindow(this, viewHolder.main, new function() {
+        PINWindow = new PINInputWindow(this, viewHolder.main, new function() {
             @Override
             public void run(String... params) {
-                if(presenter.isPINCorrect(params[0])){
-                    closeWindow();
-                    presenter.afterCorrectPINInput();
+                try {
+                    if(presenter.isPINCorrect(params[0])){
+                        closeWindow();
+                        presenter.afterCorrectPINInput();
+                    }
+                } catch (MainPresenter.BlockPINException e) {
                 }
+                long block = presenter.isPINBlocked();
+                if(block>0) PINWindow.blockPINFor(block);
             }
         });
-        openWindow(window.getView(), false);
+        long block = presenter.isPINBlocked();
+        if(block>0) PINWindow.blockPINFor(block);
+        openWindow(PINWindow.getView(), false);
     }
 
     @Override

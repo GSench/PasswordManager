@@ -45,5 +45,5 @@ dependencies {
     compile 'com.github.angads25:filepicker:1.0.9'
     compile 'com.github.maximeroussy:invitrode:1.0.10'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
-    compile 'com.andrognito.pinlockview:pinlockview:2.0.0'
+    compile 'com.andrognito.pinlockview:pinlockview:2.0.1'
 }

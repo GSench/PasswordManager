@@ -45,8 +45,8 @@ public class AndroidInterface implements SystemInterface {
     }
 
     @Override
-    public String getSavedString(String title) {
-        return context.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getString(title, null);
+    public String getSavedString(String title, String def) {
+        return context.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getString(title, def);
     }
 
     @Override
@@ -54,6 +54,33 @@ public class AndroidInterface implements SystemInterface {
         context.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
                 .edit()
                 .putString(title, string)
+                .commit();
+    }
+
+    @Override
+    public int getSavedInt(String title, int def) {
+        return context.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getInt(title, def);
+    }
+
+    @Override
+    public void saveInt(String title, int i) {
+        context.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
+                .edit()
+                .putInt(title, i)
+                .commit();
+    }
+
+
+    @Override
+    public long getSavedLong(String title, long def) {
+        return context.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getLong(title, def);
+    }
+
+    @Override
+    public void saveLong(String title, long i) {
+        context.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
+                .edit()
+                .putLong(title, i)
                 .commit();
     }
 

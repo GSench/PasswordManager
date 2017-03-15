@@ -1,13 +1,13 @@
 package ru.gsench.passwordmanager.windows;
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
-import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 
-import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
-import com.andrognito.pinlockview.PinLockView;
 
 import ru.gsench.passwordmanager.R;
 import utils.function;
@@ -19,20 +19,19 @@ import utils.function;
 public class PINInputWindow {
 
     private Context context;
-    public ViewGroup main;
+    private PINInputViewHolder viewHolder;
+    private CountDownTimer timer;
 
     public PINInputWindow(Context context, ViewGroup parent, final function onPinInput){
         this.context=context;
-        main = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.input_pin, parent, false);
-        PinLockView pin = (PinLockView) main.findViewById(R.id.pin_lock_view);
-        IndicatorDots dots = (IndicatorDots) main.findViewById(R.id.pin_dots);
-        pin.attachIndicatorDots(dots);
-        pin.setPinLength(4);
-        pin.setTextColor(ContextCompat.getColor(context, R.color.pin_color));
-        dots.setIndicatorType(IndicatorDots.IndicatorType.FILL_WITH_ANIMATION);
-        pin.setPinLockListener(new PinLockListener() {
+        viewHolder = new PINInputViewHolder(context, parent);
+        viewHolder.pinView.attachIndicatorDots(viewHolder.dots);
+        viewHolder.pinView.setPinLength(4);
+        viewHolder.pinView.setTextColor(ContextCompat.getColor(context, R.color.pin_color));
+        viewHolder.pinView.setPinLockListener(new PinLockListener() {
             @Override
             public void onComplete(String pin) {
+                viewHolder.pinView.resetPinLockView();
                 onPinInput.run(pin);
             }
 
@@ -49,6 +48,33 @@ public class PINInputWindow {
     }
 
     public ViewGroup getView(){
-        return main;
+        return viewHolder.main;
+    }
+
+    public void blockPINFor(long time){
+        if(timer!=null) return;
+        timer = new CountDownTimer(time, 1000) {
+            @Override
+            public void onTick(long l) {
+                viewHolder.timer.setText(context.getString(R.string.pin_retry, l/1000));
+            }
+
+            @Override
+            public void onFinish() {
+                viewHolder.block.setOnTouchListener(null);
+                viewHolder.timer.setText(null);
+                viewHolder.timer.setVisibility(View.GONE);
+                timer=null;
+            }
+        };
+        viewHolder.block.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+        viewHolder.timer.setVisibility(View.VISIBLE);
+        viewHolder.timer.setText(context.getString(R.string.pin_retry, time/1000));
+        timer.start();
     }
 }

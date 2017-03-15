@@ -19,6 +19,10 @@ public class MainPresenter {
     private static final String ACCOUNT_BASE = "base_path";
     private static final String KEY = "key";
     private static final String PIN = "pin";
+    private static final String PIN_TRIES = "pin_tries";
+    private static final String LAST_PIN_TRY = "last_pin_try";
+    private static final long PIN_BLOCK = 30*1000;
+    private static final int PIN_LOCK_TRIES = 3;
 
     private MainView view;
     private SystemInterface system;
@@ -30,7 +34,7 @@ public class MainPresenter {
     }
 
     public void onStart(){
-        String basePath = system.getSavedString(ACCOUNT_BASE);
+        String basePath = system.getSavedString(ACCOUNT_BASE, null);
         if(basePath==null){
             view.selectBaseWindow();
             return;
@@ -74,12 +78,40 @@ public class MainPresenter {
         system.saveString(KEY, accountSystem.getKey());
     }
 
-    public boolean isPINCorrect(String pin){
-        return pin.equals(system.getSavedString(PIN));
+    public boolean isPINCorrect(String pin) throws BlockPINException {
+        long block = isPINBlocked();
+        if(block>0) throw new BlockPINException(block);
+
+        boolean correct = pin.equals(system.getSavedString(PIN, null));
+        if(!correct){
+            system.saveInt(PIN_TRIES, system.getSavedInt(PIN_TRIES, 0)+1);
+            system.saveLong(LAST_PIN_TRY, System.currentTimeMillis());
+        } else {
+            system.saveInt(PIN_TRIES, 0);
+        }
+        return correct;
+    }
+
+    public long isPINBlocked(){
+        int tries = system.getSavedInt(PIN_TRIES, 0);
+        long current = System.currentTimeMillis();
+        long lastTry = system.getSavedLong(LAST_PIN_TRY, current-PIN_BLOCK);
+        if (tries>=PIN_LOCK_TRIES && current-lastTry <= PIN_BLOCK) return PIN_BLOCK - current + lastTry;
+        else return -1;
+    }
+
+    public class BlockPINException extends Exception {
+        public long getTimer() {
+            return timer;
+        }
+        private long timer = 0;
+        public BlockPINException(long timer){
+            this.timer=timer;
+        }
     }
 
     public void afterCorrectPINInput(){
-        String key = system.getSavedString(KEY);
+        String key = system.getSavedString(KEY, null);
         isKeyPhraseCorrect(key);
         afterCorrectKeyInput();
     }
@@ -113,7 +145,7 @@ public class MainPresenter {
             view.newKeyWindow();
             return;
         }
-        if(system.getSavedString(PIN)!=null)
+        if(system.getSavedString(PIN, null)!=null)
             view.openPINWindow();
         else
             view.keyInputWindow();
@@ -144,7 +176,7 @@ public class MainPresenter {
     //TODO To separate thread
     private void saveAccountBase(){
         try {
-            system.writeFileToPath(accountSystem.encryptSystem(), system.getSavedString(ACCOUNT_BASE));
+            system.writeFileToPath(accountSystem.encryptSystem(), system.getSavedString(ACCOUNT_BASE, null));
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         } catch (IOException e) {
