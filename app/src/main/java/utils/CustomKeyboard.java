@@ -162,20 +162,6 @@ public class CustomKeyboard {
      * @param edittext EditText that registers to the custom keyboard.
      */
     public void registerEditText(final EditText edittext) {
-        // Disable standard keyboard hard way
-        // NOTE There is also an easy way: 'edittext.setInputType(InputType.TYPE_NULL)' (but you will not have a cursor, and no 'edittext.setCursorVisible(true)' doesn't work )
-        edittext.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                EditText edittext = (EditText) v;
-                int inType = edittext.getInputType();       // Backup the input type
-                edittext.setInputType(InputType.TYPE_NULL); // Disable standard keyboard
-                edittext.onTouchEvent(event);               // Call native handler
-                edittext.setInputType(inType);              // Restore input type
-                edittext.setCursorVisible(true);
-                return true; // Consume touch event
-            }
-        });
         // Disable spell check (hex strings look like words to Android)
         edittext.setInputType(edittext.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         /**

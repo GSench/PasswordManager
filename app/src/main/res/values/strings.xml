@@ -26,4 +26,6 @@
     <string name="write_permission_denied">Permission denied</string>
     <string name="input_key">Input key phrase</string>
     <string name="input_new_key">Create new key. It can be phrase, song or poem lyrics, address, name list, etc.\nRemember your key! If you forget your key, password base will be lost and can not be restored!!!</string>
+    <string name="create_pin_title">Create pin?</string>
+    <string name="create_pin_msg">You can remember key in app and input only PIN/</string>
 </resources>

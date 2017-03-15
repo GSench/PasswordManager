@@ -188,8 +188,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     public void newPINDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Create PIN?")
-                .setMessage("Create new PIN?")
+                .setTitle(R.string.create_pin_title)
+                .setMessage(R.string.create_pin_msg)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
