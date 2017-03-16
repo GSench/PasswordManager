@@ -29,7 +29,13 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private final String defaultBaseFileName = "base.xml";
     private final String defaultBaseFilePath = new File(Environment.getExternalStorageDirectory(), "Password Manager/"+defaultBaseFileName).getAbsolutePath();
 
-    //TODO App Preferences
+    /**TODO App Preferences
+     * - keyboard option
+     * - base reselection
+     * - pin setting
+     * - key setting
+     * */
+
     public static final String APP_PREFERENCES = "AppPreferences";
 
     MainPresenter presenter;

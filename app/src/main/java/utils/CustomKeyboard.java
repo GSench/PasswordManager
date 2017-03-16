@@ -45,6 +45,8 @@ import ru.gsench.passwordmanager.R;
  */
 public class CustomKeyboard {
 
+    //TODO Copy/Paste for edittext
+
     /** A link to the KeyboardView that is used to render this CustomKeyboard. */
     private KeyboardView mKeyboardView;
     /** A link to the activity that hosts the {@link #mKeyboardView}. */
