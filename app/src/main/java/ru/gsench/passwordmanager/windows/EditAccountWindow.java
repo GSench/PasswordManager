@@ -24,12 +24,10 @@ public class EditAccountWindow {
 
     private Context context;
     public EditAccountViewHolder aViewHolder;
-    private WindowListener listener;
     private int currentID = -1;
 
-    public EditAccountWindow(Context context, ViewGroup parent, final WindowListener listener){
+    public EditAccountWindow(Context context, ViewGroup parent, final function onClose){
         this.context=context;
-        this.listener=listener;
         aViewHolder = new EditAccountViewHolder(context, parent);
         updateRandomBtnsWithPref();
         aViewHolder.randomPINCode.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +66,7 @@ public class EditAccountWindow {
         aViewHolder.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onClose();
+                onClose.run();
             }
         });
     }

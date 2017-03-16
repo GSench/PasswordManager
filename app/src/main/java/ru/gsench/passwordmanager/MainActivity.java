@@ -21,7 +21,6 @@ import ru.gsench.passwordmanager.windows.KeyInputWindow;
 import ru.gsench.passwordmanager.windows.PINInputWindow;
 import ru.gsench.passwordmanager.windows.PermissionManager;
 import ru.gsench.passwordmanager.windows.SelectBaseWindow;
-import ru.gsench.passwordmanager.windows.WindowListener;
 import utils.CustomKeyboard;
 import utils.function;
 
@@ -85,9 +84,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     private void setupAccountWindow(){
-        accountWindow = new EditAccountWindow(this, viewHolder.main, new WindowListener() {
+        accountWindow = new EditAccountWindow(this, viewHolder.main, new function() {
             @Override
-            public void onClose() {
+            public void run(String... p) {
                 closeWindow();
             }
         });
