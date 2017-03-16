@@ -30,6 +30,10 @@ public class KeyInputWindow {
         viewHolder.message.setText(msg);
     }
 
+    public void clearKeyEdit(){
+        viewHolder.keyEdit.setText(null);
+    }
+
     public ViewGroup getView(){
         return viewHolder.main;
     }

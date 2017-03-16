@@ -32,4 +32,6 @@
     <string name="reset_pin">Reset PIN</string>
     <string name="reenter_pin">Confirm new PIN</string>
     <string name="pins_not_equal">PINs are not equal!</string>
+    <string name="reenter_key">Confirm new Key</string>
+    <string name="keys_not_equal">Keys are not equal!</string>
 </resources>

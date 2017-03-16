@@ -166,16 +166,30 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     @Override
     public void newKeyWindow() {
-        KeyInputWindow window = new KeyInputWindow(this, viewHolder.main, new function() {
+        final String[] key1 = {null};
+        final KeyInputWindow[] window = {null};
+        window[0] = new KeyInputWindow(this, viewHolder.main, new function() {
             @Override
             public void run(String... params) {
-                closeWindow();
-                presenter.afterNewKeyInput(params[0]);
+                if(key1[0]!=null){
+                    if(key1[0].equals(params[0])){
+                        closeWindow();
+                        presenter.afterNewKeyInput(params[0]);
+                    } else {
+                        window[0].clearKeyEdit();
+                        window[0].setMessage(getString(R.string.keys_not_equal)+"\n\n"+getString(R.string.input_new_key));
+                        key1[0] = null;
+                    }
+                } else {
+                    window[0].clearKeyEdit();
+                    window[0].setMessage(getString(R.string.reenter_key));
+                    key1[0] = params[0];
+                }
             }
         });
-        window.setMessage(getString(R.string.input_new_key));
-        keyboard.registerEditText(window.viewHolder.keyEdit);
-        openWindow(window.getView(), false);
+        window[0].setMessage(getString(R.string.input_new_key));
+        keyboard.registerEditText(window[0].viewHolder.keyEdit);
+        openWindow(window[0].getView(), false);
     }
 
     @Override
