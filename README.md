@@ -7,11 +7,12 @@ Main features:
   - Copy login/password by click in the app
   - Integrated random login/password generator
   - Create new password base or select existing one
-  - Build-in keyboard for app key input (for better security)
+  - Build-in keyboard (for better security)
+  - Base access through PIN
 
 Future features:
-  - Base access through PIN
   - Beautiful design :-)
+  - Settings
 
 ## Credits
 I used:
