@@ -22,6 +22,8 @@ import utils.AESEncryptor;
 
 public class AccountSystem {
 
+    public static final int KEY_SIZE = 32;
+
     private byte[] system;
     private ArrayList<Account> accounts;
     private String key;
@@ -45,7 +47,7 @@ public class AccountSystem {
         	accounts = new ArrayList<Account>();
         	return;
         }
-        String decrypted = new String(AESEncryptor.decrypt(system, key, 16), "UTF-8");
+        String decrypted = new String(AESEncryptor.decrypt(system, key, KEY_SIZE), "UTF-8");
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         SAXParser newSAXParser = saxParserFactory.newSAXParser();
         XMLReader parser = newSAXParser.getXMLReader();
@@ -58,7 +60,7 @@ public class AccountSystem {
 
     public byte[] encryptSystem() throws UnsupportedEncodingException, GeneralSecurityException {
         String base = BaseParser.toXML(accounts);
-        return AESEncryptor.encrypt(base.getBytes(), key, 16);
+        return AESEncryptor.encrypt(base.getBytes(), key, KEY_SIZE);
     }
 
     public Account getAccount(int i){
