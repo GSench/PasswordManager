@@ -25,13 +25,26 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/pin_dots"
         android:layout_centerHorizontal="true"
-        android:id="@+id/pin_timer"
+        android:id="@+id/pin_msg"
         android:visibility="gone"/>
 
     <View
         android:id="@+id/block"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#0FFF"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0FFF"
+        android:layout_alignLeft="@id/pin_lock_view"
+        android:layout_alignRight="@id/pin_lock_view"
+        android:layout_alignBottom="@id/pin_lock_view"
+        android:layout_alignTop="@id/pin_lock_view"/>
+
+    <Button
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/reset_pin_btn" />
 
 </RelativeLayout>

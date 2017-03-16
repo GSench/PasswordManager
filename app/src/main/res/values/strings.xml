@@ -29,4 +29,6 @@
     <string name="create_pin_title">Create pin?</string>
     <string name="create_pin_msg">You can remember key in app and input only PIN/</string>
     <string name="pin_retry">Retry over %d sec</string>
+    <string name="reset_pin">Reset PIN</string>
+    <string name="reenter_pin">Confirm new PIN</string>
 </resources>

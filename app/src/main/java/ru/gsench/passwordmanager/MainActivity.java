@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                     @Override
                     public void run(String... params) {
                         closeWindow();
-                        presenter.onBaseSelected(params[0]);
+                        presenter.onExistingBaseSelected(params[0]);
                     }
                 },
                 new function() {
@@ -185,16 +185,22 @@ public class MainActivity extends AppCompatActivity implements MainView {
             @Override
             public void run(String... params) {
                 try {
-                    if(presenter.isPINCorrect(params[0])){
+                    if (presenter.isPINCorrect(params[0])) {
                         closeWindow();
                         presenter.afterCorrectPINInput();
                     }
                 } catch (MainPresenter.BlockPINException e) {
                 }
                 long block = presenter.isPINBlocked();
-                if(block>0) PINWindow.blockPINFor(block);
+                if (block > 0) PINWindow.blockPINFor(block);
             }
-        });
+        }, new function() {
+            @Override
+            public void run(String... params) {
+                closeWindow();
+                presenter.onResetPIN();
+            }
+        }, getString(R.string.reset_pin));
         long block = presenter.isPINBlocked();
         if(block>0) PINWindow.blockPINFor(block);
         openWindow(PINWindow.getView(), false);
@@ -214,7 +220,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
                                 closeWindow();
                                 presenter.onNewPIN(params[0]);
                             }
-                        });
+                        }, new function() {
+                            @Override
+                            public void run(String... params) {
+                                closeWindow();
+                            }
+                        }, getString(R.string.cancel));
                         dialogInterface.cancel();
                         openWindow(window.getView(), true);
                     }

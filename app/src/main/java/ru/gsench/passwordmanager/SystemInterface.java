@@ -18,5 +18,5 @@ public interface SystemInterface {
     public void saveLong(String title, long i);
     public void createFileIfNotExist(String path) throws IOException;
     public void deleteFile(String path);
-
+    public void removeSaved(String str);
 }

@@ -22,7 +22,7 @@ public class PINInputWindow {
     private PINInputViewHolder viewHolder;
     private CountDownTimer timer;
 
-    public PINInputWindow(Context context, ViewGroup parent, final function onPinInput){
+    public PINInputWindow(Context context, ViewGroup parent, final function onPinInput, final function onResetPin, String resetPinBtn){
         this.context=context;
         viewHolder = new PINInputViewHolder(context, parent);
         viewHolder.pinView.attachIndicatorDots(viewHolder.dots);
@@ -45,6 +45,16 @@ public class PINInputWindow {
 
             }
         });
+        if(resetPinBtn!=null&&!resetPinBtn.equals("")){
+            viewHolder.resetPIN.setVisibility(View.VISIBLE);
+            viewHolder.resetPIN.setText(resetPinBtn);
+            viewHolder.resetPIN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onResetPin.run();
+                }
+            });
+        }
     }
 
     public ViewGroup getView(){
@@ -56,14 +66,14 @@ public class PINInputWindow {
         timer = new CountDownTimer(time, 1000) {
             @Override
             public void onTick(long l) {
-                viewHolder.timer.setText(context.getString(R.string.pin_retry, l/1000));
+                viewHolder.pinMsg.setText(context.getString(R.string.pin_retry, l/1000));
             }
 
             @Override
             public void onFinish() {
                 viewHolder.block.setOnTouchListener(null);
-                viewHolder.timer.setText(null);
-                viewHolder.timer.setVisibility(View.GONE);
+                viewHolder.pinMsg.setText(null);
+                viewHolder.pinMsg.setVisibility(View.GONE);
                 timer=null;
             }
         };
@@ -73,8 +83,13 @@ public class PINInputWindow {
                 return true;
             }
         });
-        viewHolder.timer.setVisibility(View.VISIBLE);
-        viewHolder.timer.setText(context.getString(R.string.pin_retry, time/1000));
+        viewHolder.pinMsg.setVisibility(View.VISIBLE);
+        viewHolder.pinMsg.setText(context.getString(R.string.pin_retry, time/1000));
         timer.start();
+    }
+
+    public void setMessage(String msg){
+        viewHolder.pinMsg.setVisibility(View.VISIBLE);
+        viewHolder.pinMsg.setText(msg);
     }
 }

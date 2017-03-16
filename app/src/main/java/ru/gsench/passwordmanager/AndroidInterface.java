@@ -99,4 +99,12 @@ public class AndroidInterface implements SystemInterface {
         new File(path).delete();
     }
 
+    @Override
+    public void removeSaved(String str) {
+        context.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
+                .edit()
+                .remove(str)
+                .commit();
+    }
+
 }

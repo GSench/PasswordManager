@@ -28,6 +28,8 @@ public class MainPresenter {
     private SystemInterface system;
     private AccountSystem accountSystem;
 
+    private boolean newBaseSelected = false;
+
     public MainPresenter(MainView mainView, SystemInterface system){
         view=mainView;
         this.system=system;
@@ -65,12 +67,12 @@ public class MainPresenter {
 
     public void afterCorrectKeyInput(){
         openAccountBase();
+        if(newBaseSelected) view.newPINDialog();
     }
 
     public void afterNewKeyInput(){
         saveAccountBase();
-        openAccountBase();
-        view.newPINDialog();
+        afterCorrectKeyInput();
     }
 
     public void onNewPIN(String pin){
@@ -116,6 +118,14 @@ public class MainPresenter {
         afterCorrectKeyInput();
     }
 
+    public void onResetPIN(){
+        system.removeSaved(KEY);
+        system.removeSaved(PIN);
+        system.removeSaved(PIN_TRIES);
+        system.removeSaved(LAST_PIN_TRY);
+        view.keyInputWindow();
+    }
+
     //TODO Exception handling
     public void onNewBaseSelected(String path){
         try {
@@ -125,13 +135,17 @@ public class MainPresenter {
             e.printStackTrace();
             return;
         }
-        accountSystem = new AccountSystem(null);
+        onExistingBaseSelected(path);
+    }
+
+    public void onExistingBaseSelected(String path){
+        newBaseSelected = true;
+        onBaseSelected(path);
         system.saveString(ACCOUNT_BASE, path);
-        view.newKeyWindow();
     }
 
     //TODO Exception handling
-    public void onBaseSelected(String path){
+    private void onBaseSelected(String path){
         byte[] base;
         try {
             base = system.readFileFromPath(path);
@@ -140,7 +154,6 @@ public class MainPresenter {
             return;
         }
         accountSystem = new AccountSystem(base);
-        system.saveString(ACCOUNT_BASE, path);
         if(base.length==0){
             view.newKeyWindow();
             return;
