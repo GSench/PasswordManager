@@ -70,7 +70,8 @@ public class MainPresenter {
         if(newBaseSelected) view.newPINDialog();
     }
 
-    public void afterNewKeyInput(){
+    public void afterNewKeyInput(String newKey){
+        isKeyPhraseCorrect(newKey);
         saveAccountBase();
         afterCorrectKeyInput();
     }

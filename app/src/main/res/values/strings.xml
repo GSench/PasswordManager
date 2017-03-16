@@ -31,4 +31,5 @@
     <string name="pin_retry">Retry over %d sec</string>
     <string name="reset_pin">Reset PIN</string>
     <string name="reenter_pin">Confirm new PIN</string>
+    <string name="pins_not_equal">PINs are not equal!</string>
 </resources>

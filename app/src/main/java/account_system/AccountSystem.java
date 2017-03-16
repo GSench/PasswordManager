@@ -53,6 +53,7 @@ public class AccountSystem {
         XMLReader parser = newSAXParser.getXMLReader();
         BaseParser base = new BaseParser();
         parser.setContentHandler(base);
+        decrypted = decrypted.replaceAll("&", "&amp;"); //SAX Parser &amp bug fix
         InputSource source = new InputSource(new ByteArrayInputStream(decrypted.getBytes("UTF-8")));
         parser.parse(source);
         accounts = base.getAccounts();

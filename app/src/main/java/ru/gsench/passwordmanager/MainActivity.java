@@ -169,9 +169,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
         KeyInputWindow window = new KeyInputWindow(this, viewHolder.main, new function() {
             @Override
             public void run(String... params) {
-                presenter.isKeyPhraseCorrect(params[0]);
                 closeWindow();
-                presenter.afterNewKeyInput();
+                presenter.afterNewKeyInput(params[0]);
             }
         });
         window.setMessage(getString(R.string.input_new_key));
@@ -214,20 +213,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        PINInputWindow window = new PINInputWindow(MainActivity.this, viewHolder.main, new function() {
-                            @Override
-                            public void run(String... params) {
-                                closeWindow();
-                                presenter.onNewPIN(params[0]);
-                            }
-                        }, new function() {
-                            @Override
-                            public void run(String... params) {
-                                closeWindow();
-                            }
-                        }, getString(R.string.cancel));
                         dialogInterface.cancel();
-                        openWindow(window.getView(), true);
+                        newPINWindow();
                     }
                 })
                 .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -239,6 +226,34 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 .setCancelable(false)
                 .create()
                 .show();
+    }
+
+    private void newPINWindow(){
+        final String[] pin1 = {null};
+        final PINInputWindow[] window = {null};
+        window[0] = new PINInputWindow(MainActivity.this, viewHolder.main, new function() {
+            @Override
+            public void run(String... params) {
+                if(pin1[0]!=null){
+                    if(pin1[0].equals(params[0])){
+                        closeWindow();
+                        presenter.onNewPIN(params[0]);
+                    } else {
+                        window[0].setMessage(getString(R.string.pins_not_equal));
+                        pin1[0] = null;
+                    }
+                } else {
+                    window[0].setMessage(getString(R.string.reenter_pin));
+                    pin1[0] = params[0];
+                }
+            }
+        }, new function() {
+            @Override
+            public void run(String... params) {
+                closeWindow();
+            }
+        }, getString(R.string.cancel));
+        openWindow(window[0].getView(), true);
     }
 
     public void onAddClick(View v){
