@@ -1,6 +1,7 @@
 package ru.gsench.passwordmanager;
 
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 
 import org.apache.commons.io.IOUtils;
 
@@ -11,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import utils.function;
+
 /**
  * Created by grish on 26.02.2017.
  */
@@ -19,10 +22,10 @@ public class AndroidInterface implements SystemInterface {
 
     public static final String SPREF = "preferences";
 
-    Context context;
+    private AppCompatActivity act;
 
-    public AndroidInterface(Context context){
-        this.context=context;
+    public AndroidInterface(AppCompatActivity act){
+        this.act =act;
     }
 
     @Override
@@ -46,12 +49,12 @@ public class AndroidInterface implements SystemInterface {
 
     @Override
     public String getSavedString(String title, String def) {
-        return context.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getString(title, def);
+        return act.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getString(title, def);
     }
 
     @Override
     public void saveString(String title, String string) {
-        context.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
+        act.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
                 .edit()
                 .putString(title, string)
                 .commit();
@@ -59,12 +62,12 @@ public class AndroidInterface implements SystemInterface {
 
     @Override
     public int getSavedInt(String title, int def) {
-        return context.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getInt(title, def);
+        return act.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getInt(title, def);
     }
 
     @Override
     public void saveInt(String title, int i) {
-        context.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
+        act.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
                 .edit()
                 .putInt(title, i)
                 .commit();
@@ -73,12 +76,12 @@ public class AndroidInterface implements SystemInterface {
 
     @Override
     public long getSavedLong(String title, long def) {
-        return context.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getLong(title, def);
+        return act.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getLong(title, def);
     }
 
     @Override
     public void saveLong(String title, long i) {
-        context.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
+        act.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
                 .edit()
                 .putLong(title, i)
                 .commit();
@@ -101,10 +104,32 @@ public class AndroidInterface implements SystemInterface {
 
     @Override
     public void removeSaved(String str) {
-        context.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
+        act.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
                 .edit()
                 .remove(str)
                 .commit();
+    }
+
+    @Override
+    public void doOnBackground(final function background) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                background.run();
+            }
+        }).start();
+
+    }
+
+    @Override
+    public void doOnForeground(final function function) {
+        if(act!=null)
+        act.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                function.run();
+            }
+        });
     }
 
 }

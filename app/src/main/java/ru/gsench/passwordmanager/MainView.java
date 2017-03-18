@@ -14,5 +14,6 @@ public interface MainView {
     public void newKeyWindow();
     public void openPINWindow();
     public void newPINDialog();
+    public void onCorrectKeyInput();
 
 }

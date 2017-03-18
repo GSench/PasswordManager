@@ -9,6 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import account_system.Account;
 import account_system.AccountSystem;
+import utils.function;
 
 /**
  * Created by grish on 26.02.2017.
@@ -29,6 +30,7 @@ public class MainPresenter {
     private AccountSystem accountSystem;
 
     private boolean newBaseSelected = false;
+    private boolean newKeyInput = false;
 
     public MainPresenter(MainView mainView, SystemInterface system){
         view=mainView;
@@ -45,35 +47,41 @@ public class MainPresenter {
     }
 
     //TODO Exception handling
-    //TODO To separate thread
-    public boolean isKeyPhraseCorrect(String text){
-        try {
-            accountSystem.decryptSystem(text);
-        } catch (SAXException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-            return false;
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public void afterCorrectKeyInput(){
-        openAccountBase();
-        if(newBaseSelected) view.newPINDialog();
+    public void onKeyInput(final String key){
+        system.doOnBackground(new function() {
+            @Override
+            public void run(String... params) {
+                try {
+                    accountSystem.initSystem(key);
+                } catch (SAXException e) {
+                    e.printStackTrace();
+                    return;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                    return;
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                system.doOnForeground(new function() {
+                    @Override
+                    public void run(String... params) {
+                        view.onCorrectKeyInput();
+                        openAccountBase();
+                        if(newKeyInput) saveAccountBase();
+                        if(newBaseSelected) view.newPINDialog();
+                    }
+                });
+            }
+        });
     }
 
     public void afterNewKeyInput(String newKey){
-        isKeyPhraseCorrect(newKey);
-        saveAccountBase();
-        afterCorrectKeyInput();
+        newKeyInput = true;
+        onKeyInput(newKey);
     }
 
     public void onNewPIN(String pin){
@@ -81,18 +89,18 @@ public class MainPresenter {
         system.saveString(KEY, accountSystem.getKey());
     }
 
-    public boolean isPINCorrect(String pin) throws BlockPINException {
+    public void onPINInput(String pin) throws BlockPINException {
         long block = isPINBlocked();
         if(block>0) throw new BlockPINException(block);
 
-        boolean correct = pin.equals(system.getSavedString(PIN, null));
-        if(!correct){
+        if(!pin.equals(system.getSavedString(PIN, null))){
             system.saveInt(PIN_TRIES, system.getSavedInt(PIN_TRIES, 0)+1);
             system.saveLong(LAST_PIN_TRY, System.currentTimeMillis());
         } else {
             system.saveInt(PIN_TRIES, 0);
+            String key = system.getSavedString(KEY, null);
+            onKeyInput(key);
         }
-        return correct;
     }
 
     public long isPINBlocked(){
@@ -111,12 +119,6 @@ public class MainPresenter {
         public BlockPINException(long timer){
             this.timer=timer;
         }
-    }
-
-    public void afterCorrectPINInput(){
-        String key = system.getSavedString(KEY, null);
-        isKeyPhraseCorrect(key);
-        afterCorrectKeyInput();
     }
 
     public void onResetPIN(){

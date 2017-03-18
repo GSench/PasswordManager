@@ -128,15 +128,17 @@ public class MainActivity extends AppCompatActivity implements MainView {
         KeyInputWindow window = new KeyInputWindow(this, viewHolder.main, new function() {
             @Override
             public void run(String... params) {
-                if(presenter.isKeyPhraseCorrect(params[0])){
-                    closeWindow();
-                    presenter.afterCorrectKeyInput();
-                }
+                presenter.onKeyInput(params[0]);
             }
         });
         window.setMessage(getString(R.string.input_key));
         keyboard.registerEditText(window.viewHolder.keyEdit);
         openWindow(window.getView(), false);
+    }
+
+    @Override
+    public void onCorrectKeyInput(){
+        closeWindow();
     }
 
     @Override
@@ -180,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
             public void run(String... params) {
                 if(key1[0]!=null){
                     if(key1[0].equals(params[0])){
-                        closeWindow();
                         presenter.afterNewKeyInput(params[0]);
                     } else {
                         window[0].clearKeyEdit();
@@ -205,10 +206,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
             @Override
             public void run(String... params) {
                 try {
-                    if (presenter.isPINCorrect(params[0])) {
-                        closeWindow();
-                        presenter.afterCorrectPINInput();
-                    }
+                    presenter.onPINInput(params[0]);
                 } catch (MainPresenter.BlockPINException e) {
                 }
                 long block = presenter.isPINBlocked();

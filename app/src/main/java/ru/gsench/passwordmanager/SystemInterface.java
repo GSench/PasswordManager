@@ -2,6 +2,8 @@ package ru.gsench.passwordmanager;
 
 import java.io.IOException;
 
+import utils.function;
+
 /**
  * Created by grish on 26.02.2017.
  */
@@ -19,4 +21,6 @@ public interface SystemInterface {
     public void createFileIfNotExist(String path) throws IOException;
     public void deleteFile(String path);
     public void removeSaved(String str);
+    public void doOnBackground(function background);
+    public void doOnForeground(function function);
 }

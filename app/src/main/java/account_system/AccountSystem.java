@@ -43,7 +43,7 @@ public class AccountSystem {
         accounts=null;
     }
 
-    public void decryptSystem(String key) throws SAXException, IOException, GeneralSecurityException, ParserConfigurationException {
+    public void initSystem(String key) throws SAXException, IOException, GeneralSecurityException, ParserConfigurationException {
         this.key=key;
         if(system==null||system.length==0){
         	accounts = new ArrayList<Account>();
@@ -56,6 +56,7 @@ public class AccountSystem {
         BaseParser base = new BaseParser();
         parser.setContentHandler(base);
         decrypted = decrypted.replaceAll("&", "&amp;"); //SAX Parser &amp bug fix
+        //TODO Fix all special chars bugs! http://stackoverflow.com/a/21430590/5206557
         InputSource source = new InputSource(new ByteArrayInputStream(decrypted.getBytes("UTF-8")));
         parser.parse(source);
         accounts = base.getAccounts();
