@@ -22,6 +22,8 @@ import utils.AESEncryptor;
 
 public class AccountSystem {
 
+    //TODO System version in XML
+
     public static final int KEY_SIZE = 32;
 
     private byte[] system;

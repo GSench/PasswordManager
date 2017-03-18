@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
      * - pin setting
      * - key setting
      * */
+    //TODO Separate windows' system to extended class
+    //TODO Passwords' categories
 
     public static final String APP_PREFERENCES = "AppPreferences";
 
@@ -215,8 +217,19 @@ public class MainActivity extends AppCompatActivity implements MainView {
         }, new function() {
             @Override
             public void run(String... params) {
-                closeWindow();
-                presenter.onResetPIN();
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(R.string.reset_pin)
+                        .setMessage(R.string.reset_pin_msg)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                closeWindow();
+                                presenter.onResetPIN();
+                            }
+                        })
+                        .setNeutralButton(R.string.cancel, null)
+                        .create()
+                        .show();
             }
         }, getString(R.string.reset_pin));
         long block = presenter.isPINBlocked();

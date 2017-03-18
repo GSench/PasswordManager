@@ -34,4 +34,5 @@
     <string name="pins_not_equal">PINs are not equal!</string>
     <string name="reenter_key">Confirm new Key</string>
     <string name="keys_not_equal">Keys are not equal!</string>
+    <string name="reset_pin_msg">Are you sure that you want to reset PIN? You have to input key of base instead.</string>
 </resources>
