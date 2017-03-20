@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -142,6 +143,34 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
+    public void onIncorrectKeyInput() {
+        Toast.makeText(this, R.string.incorrect_key, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void unableToParseBase() {
+        Toast.makeText(this, R.string.unable_parse_base, Toast.LENGTH_SHORT).show();
+        presenter.resetBase();
+    }
+
+    @Override
+    public void unexpectedException() {
+        Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void unableToEditBaseFile() {
+        Toast.makeText(this, R.string.unable_to_edit_file, Toast.LENGTH_SHORT).show();
+        presenter.resetBase();
+    }
+
+    @Override
+    public void unableToReadBaseFile() {
+        Toast.makeText(this, R.string.unable_to_read_file, Toast.LENGTH_SHORT).show();
+        presenter.resetBase();
+    }
+
+    @Override
     public void selectBaseWindow() {
         SelectBaseWindow window = new SelectBaseWindow(this, viewHolder.main,
                 new function() {
@@ -222,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 closeWindow();
-                                presenter.onResetPIN();
+                                presenter.onResetPINBtn();
                             }
                         })
                         .setNeutralButton(R.string.cancel, null)

@@ -46,24 +46,35 @@ public class MainPresenter {
         onBaseSelected(basePath);
     }
 
-    //TODO Exception handling
     public void onKeyInput(final String key){
         system.doOnBackground(new function() {
             @Override
             public void run(String... params) {
                 try {
                     accountSystem.initSystem(key);
-                } catch (SAXException e) {
-                    e.printStackTrace();
-                    return;
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (SAXException | IOException e) {
+                    system.doOnForeground(new function() {
+                        @Override
+                        public void run(String... params) {
+                            view.unableToParseBase();
+                        }
+                    });
                     return;
                 } catch (GeneralSecurityException e) {
-                    e.printStackTrace();
+                    system.doOnForeground(new function() {
+                        @Override
+                        public void run(String... params) {
+                            view.onIncorrectKeyInput();
+                        }
+                    });
                     return;
                 } catch (ParserConfigurationException e) {
-                    e.printStackTrace();
+                    system.doOnForeground(new function() {
+                        @Override
+                        public void run(String... params) {
+                            view.unexpectedException();
+                        }
+                    });
                     return;
                 }
                 system.doOnForeground(new function() {
@@ -121,21 +132,24 @@ public class MainPresenter {
         }
     }
 
-    public void onResetPIN(){
+    public void onResetPINBtn(){
+        resetPIN();
+        view.keyInputWindow();
+    }
+
+    private void resetPIN(){
         system.removeSaved(KEY);
         system.removeSaved(PIN);
         system.removeSaved(PIN_TRIES);
         system.removeSaved(LAST_PIN_TRY);
-        view.keyInputWindow();
     }
 
-    //TODO Exception handling
     public void onNewBaseSelected(String path){
         try {
             system.deleteFile(path);
             system.createFileIfNotExist(path);
         } catch (IOException e) {
-            e.printStackTrace();
+            view.unableToEditBaseFile();
             return;
         }
         onExistingBaseSelected(path);
@@ -147,13 +161,12 @@ public class MainPresenter {
         system.saveString(ACCOUNT_BASE, path);
     }
 
-    //TODO Exception handling
     private void onBaseSelected(String path){
         byte[] base;
         try {
             base = system.readFileFromPath(path);
         } catch (IOException e) {
-            e.printStackTrace();
+            view.unableToReadBaseFile();
             return;
         }
         accountSystem = new AccountSystem(base);
@@ -165,6 +178,12 @@ public class MainPresenter {
             view.openPINWindow();
         else
             view.keyInputWindow();
+    }
+
+    public void resetBase(){
+        system.removeSaved(ACCOUNT_BASE);
+        resetPIN();
+        onStart();
     }
 
     private void openAccountBase(){
@@ -188,16 +207,32 @@ public class MainPresenter {
         openAccountBase();
     }
 
-    //TODO Exception handling
-    //TODO To separate thread
+    private final static Object synchronizationStub = new Object();
     private void saveAccountBase(){
-        try {
-            system.writeFileToPath(accountSystem.encryptSystem(), system.getSavedString(ACCOUNT_BASE, null));
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        system.doOnBackground(new function() {
+            @Override
+            public void run(String... params) {
+                synchronized (synchronizationStub){
+                    try {
+                        system.writeFileToPath(accountSystem.encryptSystem(), system.getSavedString(ACCOUNT_BASE, null));
+                    } catch (GeneralSecurityException e) {
+                        system.doOnForeground(new function() {
+                            @Override
+                            public void run(String... params) {
+                                view.unexpectedException();
+                            }
+                        });
+                    } catch (IOException e) {
+                        system.doOnForeground(new function() {
+                            @Override
+                            public void run(String... params) {
+                                view.unableToEditBaseFile();
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
 }

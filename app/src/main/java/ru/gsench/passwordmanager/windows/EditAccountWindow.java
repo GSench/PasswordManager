@@ -19,6 +19,8 @@ import static ru.gsench.passwordmanager.MainActivity.APP_PREFERENCES;
 
 public class EditAccountWindow {
 
+    //TODO Rich random settings
+
     private static final String FULLY_RANDOM = "fully_random";
     private static final String WITHOUT_SYM = "without_sym";
 

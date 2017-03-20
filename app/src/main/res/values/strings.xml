@@ -35,4 +35,9 @@
     <string name="reenter_key">Confirm new Key</string>
     <string name="keys_not_equal">Keys are not equal!</string>
     <string name="reset_pin_msg">Are you sure that you want to reset PIN? You have to input key of base instead.</string>
+    <string name="incorrect_key">Key is incorrect!</string>
+    <string name="unable_parse_base">Unable to read password base. Format error. Maybe it was corrupted.</string>
+    <string name="unexpected_error">Unexpected error during working with base.</string>
+    <string name="unable_to_read_file">Unable to read base file.</string>
+    <string name="unable_to_edit_file">Unable to edit base file.</string>
 </resources>
