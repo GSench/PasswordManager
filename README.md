@@ -13,6 +13,7 @@ Main features:
 Future features:
   - Beautiful design :-)
   - Settings
+  - Passwords' categories
 
 ## Credits
 I used:
