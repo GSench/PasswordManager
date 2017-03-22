@@ -24,16 +24,21 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.widget.PopupMenu;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Layout;
+import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import ru.gsench.passwordmanager.R;
 
@@ -123,7 +128,7 @@ public class CustomKeyboard {
      * and load the keyboard layout from xml file <var>layoutid</var> (see {@link Keyboard} for description).
      * Note that the <var>host</var> activity must have a <var>KeyboardView</var> in its layout (typically aligned with the bottom of the activity).
      * Note that the keyboard layout xml file may include key codes for navigation; see the constants in this class for their values.
-     * Note that to enable EditText's to use this custom keyboard, call the {@link #registerEditText(EditText)}.
+     * Note that to enable EditText's to use this custom keyboard, call the {@link #registerEditText(EditText, boolean)}.
      *
      * @param host The hosting activity.
      * @param keyboardView KeyboardView.
@@ -162,10 +167,20 @@ public class CustomKeyboard {
      * Register <var>EditText<var> with resource id <var>resid</var> (on the hosting activity) for using this custom keyboard.
      *
      * @param edittext EditText that registers to the custom keyboard.
+     * @param enableClipboard true if copy/paste menu should appear
      */
-    public void registerEditText(final EditText edittext) {
+    public void registerEditText(final EditText edittext, final boolean enableClipboard) {
         // Disable spell check (hex strings look like words to Android)
         edittext.setInputType(edittext.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        //Copy/Paste menu
+        final PopupMenu popupMenu = getCopyPasteClipboard(edittext);
+        //On long press listener
+        final GestureDetector gestureDetector = new GestureDetector(mHostActivity, new MyOnGestureListener() {
+            @Override
+            public void onLongPress(MotionEvent motionEvent) {
+                if(enableClipboard) popupMenu.show();
+            }
+        });
         /**
          * Try to show cursor the complicated way:
          * @source http://androidpadanam.wordpress.com/2013/05/29/customkeyboard-example/
@@ -197,8 +212,8 @@ public class CustomKeyboard {
                             else
                                 edittext.setSelection(offset - 1);
                         break;
-
                 }
+                gestureDetector.onTouchEvent(event);
                 return true;
             }
         };
@@ -212,6 +227,31 @@ public class CustomKeyboard {
     public void enableHapticFeedback(boolean goEnabled){
         mKeyboardView.setHapticFeedbackEnabled(goEnabled);
         hapticFeedback = goEnabled;
+    }
+
+    private PopupMenu getCopyPasteClipboard(final EditText editText){
+        final int COPY = 0;
+        final int PASTE = 1;
+        PopupMenu popupMenu = new PopupMenu(mHostActivity, editText);
+        popupMenu.getMenu().add(Menu.NONE, COPY, 0, mHostActivity.getString(R.string.copy));
+        popupMenu.getMenu().add(Menu.NONE, PASTE, 1, mHostActivity.getString(R.string.paste));
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case COPY:
+                        IntentUtils.copyText(editText.getText().toString(), mHostActivity);
+                        Toast.makeText(mHostActivity, R.string.copied, Toast.LENGTH_SHORT).show();
+                        break;
+                    case PASTE:
+                        editText.setText(IntentUtils.pasteText(mHostActivity));
+                        editText.setSelection(editText.getText().length());
+                        break;
+                }
+                return false;
+            }
+        });
+        return popupMenu;
     }
 
 }

@@ -9,6 +9,8 @@ import android.net.Uri;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static android.content.ClipDescription.MIMETYPE_TEXT_PLAIN;
+
 /**
  * Created by grish on 04.03.2017.
  */
@@ -19,6 +21,13 @@ public class IntentUtils {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("", text);
         clipboard.setPrimaryClip(clip);
+    }
+
+    public static String pasteText(Context context){
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        if(clipboard.hasPrimaryClip()&&clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN))
+        return clipboard.getPrimaryClip().getItemAt(0).getText().toString();
+        else return "";
     }
 
     public static void openURL(String url, Context context){

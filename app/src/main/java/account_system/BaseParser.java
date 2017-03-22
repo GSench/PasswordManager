@@ -61,6 +61,9 @@ public class BaseParser extends DefaultHandler {
         return base.toString();
     }
 
+    //SAX Parser falls if Input contains special characters as described here http://stackoverflow.com/a/21430590
+    //Special chars must be replaced
+
     private static String format(String val) {
         return val
                 .replaceAll("&", "&amp;")
@@ -79,6 +82,8 @@ public class BaseParser extends DefaultHandler {
                 .replaceAll("&amp;", "&");
     }
 
+    //SAX Parser automatically replaces "&amp;" with '&', but skips other replacements
+    //It's needed for format/reformat methods work
     public static String SAXParserBugFix(String input){
         return input.replaceAll("&amp;", "&amp;amp;");
     }

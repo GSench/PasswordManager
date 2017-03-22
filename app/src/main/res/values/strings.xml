@@ -40,4 +40,7 @@
     <string name="unexpected_error">Unexpected error during working with base.</string>
     <string name="unable_to_read_file">Unable to read base file.</string>
     <string name="unable_to_edit_file">Unable to edit base file.</string>
+    <string name="copy">Copy</string>
+    <string name="paste">Paste</string>
+    <string name="copied">Text copied to clipboard</string>
 </resources>

@@ -99,9 +99,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 closeWindow();
             }
         });
-        keyboard.registerEditText(accountWindow.aViewHolder.editLogin);
-        keyboard.registerEditText(accountWindow.aViewHolder.editName);
-        keyboard.registerEditText(accountWindow.aViewHolder.editPassword);
+        keyboard.registerEditText(accountWindow.aViewHolder.editLogin, true);
+        keyboard.registerEditText(accountWindow.aViewHolder.editName, true);
+        keyboard.registerEditText(accountWindow.aViewHolder.editPassword, true);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
             }
         });
         window.setMessage(getString(R.string.input_key));
-        keyboard.registerEditText(window.viewHolder.keyEdit);
+        keyboard.registerEditText(window.viewHolder.keyEdit, true);
         openWindow(window.getView(), false);
     }
 
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
             }
         });
         window[0].setMessage(getString(R.string.input_new_key));
-        keyboard.registerEditText(window[0].viewHolder.keyEdit);
+        keyboard.registerEditText(window[0].viewHolder.keyEdit, true);
         openWindow(window[0].getView(), false);
     }
 
