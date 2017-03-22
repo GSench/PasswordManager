@@ -22,8 +22,6 @@ import utils.AESEncryptor;
 
 public class AccountSystem {
 
-    //TODO System version in XML
-
     public static final int KEY_SIZE = 32;
 
     private byte[] system;
@@ -55,8 +53,7 @@ public class AccountSystem {
         XMLReader parser = newSAXParser.getXMLReader();
         BaseParser base = new BaseParser();
         parser.setContentHandler(base);
-        decrypted = decrypted.replaceAll("&", "&amp;"); //SAX Parser &amp bug fix
-        //TODO Fix all special chars bugs! http://stackoverflow.com/a/21430590/5206557
+        decrypted = BaseParser.SAXParserBugFix(decrypted);
         InputSource source = new InputSource(new ByteArrayInputStream(decrypted.getBytes("UTF-8")));
         parser.parse(source);
         accounts = base.getAccounts();
