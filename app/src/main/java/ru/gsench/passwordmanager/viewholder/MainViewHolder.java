@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager;
+package ru.gsench.passwordmanager.viewholder;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
@@ -6,6 +6,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.github.clans.fab.FloatingActionButton;
+
+import ru.gsench.passwordmanager.R;
 
 /**
  * Created by grish on 01.03.2017.

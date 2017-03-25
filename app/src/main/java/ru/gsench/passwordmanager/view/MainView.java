@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager;
+package ru.gsench.passwordmanager.view;
 
 import account_system.AccountSystem;
 

@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager.windows;
+package ru.gsench.passwordmanager.aview;
 
 import android.content.Context;
 import android.os.CountDownTimer;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.andrognito.pinlockview.PinLockListener;
 
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.viewholder.PINInputViewHolder;
 import utils.function;
 
 /**

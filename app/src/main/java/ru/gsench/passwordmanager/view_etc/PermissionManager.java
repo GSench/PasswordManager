@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager.windows;
+package ru.gsench.passwordmanager.view_etc;
 
 import android.Manifest;
 import android.app.Activity;

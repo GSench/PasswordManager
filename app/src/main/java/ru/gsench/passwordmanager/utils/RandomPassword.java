@@ -1,4 +1,4 @@
-package utils;
+package ru.gsench.passwordmanager.utils;
 
 import org.apache.commons.lang3.RandomStringUtils;
 

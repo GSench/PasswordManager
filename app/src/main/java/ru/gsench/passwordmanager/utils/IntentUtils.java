@@ -1,4 +1,4 @@
-package utils;
+package ru.gsench.passwordmanager.utils;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;

@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager.windows;
+package ru.gsench.passwordmanager.aview;
 
 import android.content.Context;
 import android.text.Editable;
@@ -7,11 +7,12 @@ import android.view.ViewGroup;
 
 import account_system.Account;
 import ru.gsench.passwordmanager.R;
-import utils.MyTextWatcher;
-import utils.RandomPassword;
+import ru.gsench.passwordmanager.viewholder.EditAccountViewHolder;
+import ru.gsench.passwordmanager.utils.MyTextWatcher;
+import ru.gsench.passwordmanager.utils.RandomPassword;
 import utils.function;
 
-import static ru.gsench.passwordmanager.MainActivity.APP_PREFERENCES;
+import static ru.gsench.passwordmanager.activity.MainActivity.APP_PREFERENCES;
 
 /**
  * Created by Григорий Сенченок on 10.03.2017.

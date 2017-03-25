@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager;
+package ru.gsench.passwordmanager.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,13 +16,18 @@ import java.io.File;
 
 import account_system.Account;
 import account_system.AccountSystem;
+import ru.gsench.passwordmanager.AndroidInterface;
+import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.presenter.MainPresenter;
+import ru.gsench.passwordmanager.view.MainView;
+import ru.gsench.passwordmanager.viewholder.MainViewHolder;
 import ru.gsench.passwordmanager.windows.AccountListAdapter;
 import ru.gsench.passwordmanager.windows.EditAccountWindow;
 import ru.gsench.passwordmanager.windows.KeyInputWindow;
 import ru.gsench.passwordmanager.windows.PINInputWindow;
 import ru.gsench.passwordmanager.windows.PermissionManager;
 import ru.gsench.passwordmanager.windows.SelectBaseWindow;
-import utils.CustomKeyboard;
+import ru.gsench.passwordmanager.utils.CustomKeyboard;
 import utils.function;
 
 public class MainActivity extends AppCompatActivity implements MainView {

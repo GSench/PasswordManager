@@ -1,9 +1,10 @@
-package ru.gsench.passwordmanager.windows;
+package ru.gsench.passwordmanager.aview;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ru.gsench.passwordmanager.viewholder.KeyInputViewHolder;
 import utils.function;
 
 /**

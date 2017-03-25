@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager.windows;
+package ru.gsench.passwordmanager.view_etc;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import account_system.Account;
 import account_system.AccountSystem;
 import ru.gsench.passwordmanager.R;
-import utils.IntentUtils;
+import ru.gsench.passwordmanager.utils.IntentUtils;
 
 
 /**

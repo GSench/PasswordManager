@@ -1,4 +1,4 @@
-package utils;
+package ru.gsench.passwordmanager.utils;
 
 /**
  * Copyright 2013 Maarten Pennings extended by SimplicityApks

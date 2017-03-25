@@ -1,4 +1,4 @@
-package utils;
+package ru.gsench.passwordmanager.utils;
 
 import android.view.GestureDetector;
 import android.view.MotionEvent;

@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager;
+package ru.gsench.passwordmanager.presenter;
 
 import org.xml.sax.SAXException;
 
@@ -9,6 +9,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import account_system.Account;
 import account_system.AccountSystem;
+import ru.gsench.passwordmanager.MainView;
+import ru.gsench.passwordmanager.SystemInterface;
 import utils.function;
 
 /**

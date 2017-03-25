@@ -1,10 +1,8 @@
-package ru.gsench.passwordmanager.windows;
+package ru.gsench.passwordmanager.aview;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
@@ -14,6 +12,7 @@ import com.github.angads25.filepicker.view.FilePickerDialog;
 import java.io.File;
 
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.viewholder.SelectBaseViewHolder;
 import utils.function;
 
 /**
@@ -23,24 +22,24 @@ import utils.function;
 public class SelectBaseWindow {
 
     private Context context;
-    private ViewGroup main;
+    private SelectBaseViewHolder viewHolder;
 
     public SelectBaseWindow(Context context, ViewGroup parent, final function onBaseSelected, final function onNewBaseSelected, final function onDefBaseSelected){
         this.context=context;
-        main = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.choose_base_dialog, parent, false);
-        main.findViewById(R.id.choose_existing_btn).setOnClickListener(new View.OnClickListener() {
+        viewHolder = new SelectBaseViewHolder(context, parent);
+        viewHolder.chooseBase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 requestFile(DialogConfigs.FILE_SELECT, SelectBaseWindow.this.context.getString(R.string.select_file), onBaseSelected);
             }
         });
-        main.findViewById(R.id.choose_new_btn).setOnClickListener(new View.OnClickListener() {
+        viewHolder.chooseNewBase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 requestFile(DialogConfigs.DIR_SELECT, SelectBaseWindow.this.context.getString(R.string.select_path), onNewBaseSelected);
             }
         });
-        main.findViewById(R.id.use_default_btn).setOnClickListener(new View.OnClickListener() {
+        viewHolder.useDefBase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onDefBaseSelected.run();
@@ -69,6 +68,6 @@ public class SelectBaseWindow {
     }
 
     public ViewGroup getView(){
-        return main;
+        return viewHolder.main;
     }
 }
