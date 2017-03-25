@@ -5,24 +5,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ru.gsench.passwordmanager.viewholder.KeyInputViewHolder;
-import utils.function;
 
 /**
  * Created by grish on 11.03.2017.
  */
 
-public class KeyInputWindow {
+public class KeyInputWindow extends AView{
 
-    private Context context;
     public KeyInputViewHolder viewHolder;
 
-    public KeyInputWindow(Context context, ViewGroup parent, final function onEnter){
-        this.context=context;
+    public KeyInputWindow(Context context, ViewGroup parent){
+        super(context, parent);
         viewHolder = new KeyInputViewHolder(context, parent);
         viewHolder.enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onEnter.run(viewHolder.keyEdit.getText().toString());
+                onResult.run(viewHolder.keyEdit.getText().toString());
             }
         });
     }
@@ -35,6 +33,7 @@ public class KeyInputWindow {
         viewHolder.keyEdit.setText(null);
     }
 
+    @Override
     public ViewGroup getView(){
         return viewHolder.main;
     }

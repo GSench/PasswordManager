@@ -19,13 +19,12 @@ import utils.function;
  * Created by grish on 11.03.2017.
  */
 
-public class SelectBaseWindow {
+public class SelectBaseWindow extends AView {
 
-    private Context context;
     private SelectBaseViewHolder viewHolder;
 
     public SelectBaseWindow(Context context, ViewGroup parent, final function onBaseSelected, final function onNewBaseSelected, final function onDefBaseSelected){
-        this.context=context;
+        super(context, parent);
         viewHolder = new SelectBaseViewHolder(context, parent);
         viewHolder.chooseBase.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +66,7 @@ public class SelectBaseWindow {
         dialog.show();
     }
 
+    @Override
     public ViewGroup getView(){
         return viewHolder.main;
     }

@@ -17,14 +17,13 @@ import utils.function;
  * Created by Григорий Сенченок on 12.03.2017.
  */
 
-public class PINInputWindow {
+public class PINInputWindow extends AView{
 
-    private Context context;
     private PINInputViewHolder viewHolder;
     private CountDownTimer timer;
 
     public PINInputWindow(Context context, ViewGroup parent, final function onPinInput, final function onResetPin, String resetPinBtn){
-        this.context=context;
+        super(context, parent);
         viewHolder = new PINInputViewHolder(context, parent);
         viewHolder.pinView.attachIndicatorDots(viewHolder.dots);
         viewHolder.pinView.setPinLength(4);
@@ -58,6 +57,7 @@ public class PINInputWindow {
         }
     }
 
+    @Override
     public ViewGroup getView(){
         return viewHolder.main;
     }

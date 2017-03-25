@@ -6,10 +6,7 @@ import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.io.File;
@@ -18,19 +15,19 @@ import account_system.Account;
 import account_system.AccountSystem;
 import ru.gsench.passwordmanager.AndroidInterface;
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.aview.EditAccountWindow;
+import ru.gsench.passwordmanager.aview.KeyInputWindow;
+import ru.gsench.passwordmanager.aview.PINInputWindow;
+import ru.gsench.passwordmanager.aview.SelectBaseWindow;
 import ru.gsench.passwordmanager.presenter.MainPresenter;
-import ru.gsench.passwordmanager.view.MainView;
-import ru.gsench.passwordmanager.viewholder.MainViewHolder;
-import ru.gsench.passwordmanager.windows.AccountListAdapter;
-import ru.gsench.passwordmanager.windows.EditAccountWindow;
-import ru.gsench.passwordmanager.windows.KeyInputWindow;
-import ru.gsench.passwordmanager.windows.PINInputWindow;
-import ru.gsench.passwordmanager.windows.PermissionManager;
-import ru.gsench.passwordmanager.windows.SelectBaseWindow;
 import ru.gsench.passwordmanager.utils.CustomKeyboard;
+import ru.gsench.passwordmanager.view.MainView;
+import ru.gsench.passwordmanager.view_etc.AccountListAdapter;
+import ru.gsench.passwordmanager.view_etc.PermissionManager;
+import ru.gsench.passwordmanager.viewholder.MainViewHolder;
 import utils.function;
 
-public class MainActivity extends AppCompatActivity implements MainView {
+public class MainActivity extends BaseActivity implements MainView {
 
     private final String defaultBaseFileName = "base.xml";
     private final String defaultBaseFilePath = new File(Environment.getExternalStorageDirectory(), "Password Manager/"+defaultBaseFileName).getAbsolutePath();
@@ -41,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
      * - pin setting
      * - key setting
      * */
-    //TODO Separate windows' system to extended class
     //TODO Passwords' categories
     //TODO Search
 
@@ -51,14 +47,13 @@ public class MainActivity extends AppCompatActivity implements MainView {
     AccountListAdapter accountListAdapter;
     MainViewHolder viewHolder;
     EditAccountWindow accountWindow;
-    PINInputWindow PINWindow;
     CustomKeyboard keyboard;
     PermissionManager permissionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main, R.id.dialog_content);
         viewHolder = new MainViewHolder(this);
         setupKeyboard();
         setupAccountWindow();
@@ -72,37 +67,16 @@ public class MainActivity extends AppCompatActivity implements MainView {
         });
     }
 
-    private void openWindow(ViewGroup viewGroup, boolean closeOnBackPressed){
-        closeWindow();
-        this.closeOnBackPressed=closeOnBackPressed;
-        viewGroup.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
-        viewHolder.dialogContent.addView(viewGroup, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-    }
-
-    private void closeWindow(){
-        viewHolder.dialogContent.removeAllViews();
-    }
-
-    private boolean closeOnBackPressed = true;
-    private boolean windowOpened(){
-        return viewHolder.dialogContent.getChildCount()!=0;
-    }
-
     private void setupKeyboard(){
         keyboard = new CustomKeyboard(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
         keyboard.enableHapticFeedback(true);
     }
 
     private void setupAccountWindow(){
-        accountWindow = new EditAccountWindow(this, viewHolder.main, new function() {
+        accountWindow = (EditAccountWindow) new EditAccountWindow(this, viewHolder.main).closeSelf(new function() {
             @Override
             public void run(String... p) {
-                closeWindow();
+                closeView();
             }
         });
         keyboard.registerEditText(accountWindow.aViewHolder.editLogin, true);
@@ -132,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     @Override
     public void keyInputWindow() {
-        KeyInputWindow window = new KeyInputWindow(this, viewHolder.main, new function() {
+        KeyInputWindow window = (KeyInputWindow) new KeyInputWindow(this, viewHolder.main).closeOnBackPressed(false).onResult(new function() {
             @Override
             public void run(String... params) {
                 presenter.onKeyInput(params[0]);
@@ -140,12 +114,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
         });
         window.setMessage(getString(R.string.input_key));
         keyboard.registerEditText(window.viewHolder.keyEdit, true);
-        openWindow(window.getView(), false);
+        openView(window);
     }
 
     @Override
     public void onCorrectKeyInput(){
-        closeWindow();
+        closeView();
     }
 
     @Override
@@ -178,29 +152,29 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     @Override
     public void selectBaseWindow() {
-        SelectBaseWindow window = new SelectBaseWindow(this, viewHolder.main,
+        SelectBaseWindow window = (SelectBaseWindow) new SelectBaseWindow(this, viewHolder.main,
                 new function() {
                     @Override
                     public void run(String... params) {
-                        closeWindow();
+                        closeView();
                         presenter.onExistingBaseSelected(params[0]);
                     }
                 },
                 new function() {
                     @Override
                     public void run(String... params) {
-                        closeWindow();
+                        closeView();
                         presenter.onNewBaseSelected(new File(new File(params[0]), defaultBaseFileName).getAbsolutePath());
                     }
                 },
                 new function() {
                     @Override
                     public void run(String... params) {
-                        closeWindow();
+                        closeView();
                         presenter.onNewBaseSelected(defaultBaseFilePath);
                     }
-                });
-        openWindow(window.getView(), false);
+                }).closeOnBackPressed(false);
+        openView(window);
     }
 
     @Override
@@ -212,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public void newKeyWindow() {
         final String[] key1 = {null};
         final KeyInputWindow[] window = {null};
-        window[0] = new KeyInputWindow(this, viewHolder.main, new function() {
+        window[0] = (KeyInputWindow) new KeyInputWindow(this, viewHolder.main).closeOnBackPressed(false).onResult(new function() {
             @Override
             public void run(String... params) {
                 if(key1[0]!=null){
@@ -232,12 +206,13 @@ public class MainActivity extends AppCompatActivity implements MainView {
         });
         window[0].setMessage(getString(R.string.input_new_key));
         keyboard.registerEditText(window[0].viewHolder.keyEdit, true);
-        openWindow(window[0].getView(), false);
+        openView(window[0]);
     }
 
     @Override
     public void openPINWindow() {
-        PINWindow = new PINInputWindow(this, viewHolder.main, new function() {
+        final PINInputWindow PINWindow[] = new PINInputWindow[]{null};
+        PINWindow[0] = (PINInputWindow) new PINInputWindow(this, viewHolder.main, new function() {
             @Override
             public void run(String... params) {
                 try {
@@ -245,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 } catch (MainPresenter.BlockPINException e) {
                 }
                 long block = presenter.isPINBlocked();
-                if (block > 0) PINWindow.blockPINFor(block);
+                if (block > 0) PINWindow[0].blockPINFor(block);
             }
         }, new function() {
             @Override
@@ -256,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                closeWindow();
+                                closeView();
                                 presenter.onResetPINBtn();
                             }
                         })
@@ -264,10 +239,10 @@ public class MainActivity extends AppCompatActivity implements MainView {
                         .create()
                         .show();
             }
-        }, getString(R.string.reset_pin));
+        }, getString(R.string.reset_pin)).closeOnBackPressed(false);
         long block = presenter.isPINBlocked();
-        if(block>0) PINWindow.blockPINFor(block);
-        openWindow(PINWindow.getView(), false);
+        if(block>0) PINWindow[0].blockPINFor(block);
+        openView(PINWindow[0]);
     }
 
     @Override
@@ -296,12 +271,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private void newPINWindow(){
         final String[] pin1 = {null};
         final PINInputWindow[] window = {null};
-        window[0] = new PINInputWindow(MainActivity.this, viewHolder.main, new function() {
+        window[0] = (PINInputWindow) new PINInputWindow(MainActivity.this, viewHolder.main, new function() {
             @Override
             public void run(String... params) {
                 if(pin1[0]!=null){
                     if(pin1[0].equals(params[0])){
-                        closeWindow();
+                        closeView();
                         presenter.onNewPIN(params[0]);
                     } else {
                         window[0].setMessage(getString(R.string.pins_not_equal));
@@ -315,10 +290,10 @@ public class MainActivity extends AppCompatActivity implements MainView {
         }, new function() {
             @Override
             public void run(String... params) {
-                closeWindow();
+                closeView();
             }
-        }, getString(R.string.cancel));
-        openWindow(window[0].getView(), true);
+        }, getString(R.string.cancel)).closeOnBackPressed(true);
+        openView(window[0]);
     }
 
     public void onAddClick(View v){
@@ -327,12 +302,13 @@ public class MainActivity extends AppCompatActivity implements MainView {
             @Override
             public void run(String... params) {
                 if(accountWindow.checkAccDialogFilling()) {
-                    closeWindow();
+                    closeView();
                     presenter.addNewAccount(accountWindow.getAccount());
                 }
             }
         });
-        openWindow(accountWindow.getView(), true);
+        accountWindow.closeOnBackPressed(true);
+        openView(accountWindow);
     }
 
     @Override
@@ -367,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
             @Override
             public void run(String... params) {
                 if(accountWindow.checkAccDialogFilling()) {
-                    closeWindow();
+                    closeView();
                     Account account1 = accountWindow.getAccount();
                     account.setName(account1.getName());
                     account.setLogin(account1.getLogin());
@@ -376,7 +352,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 }
             }
         });
-        openWindow(accountWindow.getView(), true);
+        accountWindow.closeOnBackPressed(true);
+        openView(accountWindow);
     }
 
     @Override
@@ -385,8 +362,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
             keyboard.hideCustomKeyboard();
             return;
         }
-        if(windowOpened()&&closeOnBackPressed) closeWindow();
-        else super.onBackPressed();
+        super.onBackPressed();
     }
 
 }

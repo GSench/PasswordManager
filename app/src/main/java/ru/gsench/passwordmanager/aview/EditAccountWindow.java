@@ -18,19 +18,18 @@ import static ru.gsench.passwordmanager.activity.MainActivity.APP_PREFERENCES;
  * Created by Григорий Сенченок on 10.03.2017.
  */
 
-public class EditAccountWindow {
+public class EditAccountWindow extends AView {
 
     //TODO Rich random settings
 
     private static final String FULLY_RANDOM = "fully_random";
     private static final String WITHOUT_SYM = "without_sym";
 
-    private Context context;
     public EditAccountViewHolder aViewHolder;
     private int currentID = -1;
 
-    public EditAccountWindow(Context context, ViewGroup parent, final function onClose){
-        this.context=context;
+    public EditAccountWindow(Context context, ViewGroup parent){
+        super(context, parent);
         aViewHolder = new EditAccountViewHolder(context, parent);
         updateRandomBtnsWithPref();
         aViewHolder.randomPINCode.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +68,7 @@ public class EditAccountWindow {
         aViewHolder.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onClose.run();
+                closeSelf.run();
             }
         });
     }
@@ -131,6 +130,7 @@ public class EditAccountWindow {
         return true;
     }
 
+    @Override
     public ViewGroup getView(){
         return aViewHolder.main;
     }
