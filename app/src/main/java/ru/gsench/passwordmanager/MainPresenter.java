@@ -114,6 +114,7 @@ public class MainPresenter {
         }
     }
 
+    //TODO Make secure
     public long isPINBlocked(){
         int tries = system.getSavedInt(PIN_TRIES, 0);
         long current = System.currentTimeMillis();

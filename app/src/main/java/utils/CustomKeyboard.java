@@ -20,6 +20,9 @@ package utils;
  */
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
@@ -42,6 +45,8 @@ import android.widget.Toast;
 
 import ru.gsench.passwordmanager.R;
 
+import static android.content.ClipDescription.MIMETYPE_TEXT_PLAIN;
+
 /**
  * When an activity hosts a keyboardView, this class allows several EditText's to register for it.
  *
@@ -49,8 +54,6 @@ import ru.gsench.passwordmanager.R;
  * @date   2012 December 23
  */
 public class CustomKeyboard {
-
-    //TODO Copy/Paste for edittext
 
     /** A link to the KeyboardView that is used to render this CustomKeyboard. */
     private KeyboardView mKeyboardView;
@@ -133,12 +136,12 @@ public class CustomKeyboard {
      * @param host The hosting activity.
      * @param keyboardView KeyboardView.
      */
-    public CustomKeyboard(Activity host, KeyboardView keyboardView) {
+    public CustomKeyboard(Activity host, KeyboardView keyboardView, boolean keyPreview) {
         mHostActivity = host;
         mKeyboardView = keyboardView;
         mKeyboard = new Keyboard(mHostActivity, R.xml.keyboard);
         mKeyboardView.setKeyboard(mKeyboard);
-        mKeyboardView.setPreviewEnabled(false); // NOTE Do not show the preview balloons
+        mKeyboardView.setPreviewEnabled(keyPreview);
         mKeyboardView.setOnKeyboardActionListener(mOnKeyboardActionListener);
         // Hide the standard keyboard initially
         mHostActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -240,11 +243,11 @@ public class CustomKeyboard {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case COPY:
-                        IntentUtils.copyText(editText.getText().toString(), mHostActivity);
+                        copyText(editText.getText().toString());
                         Toast.makeText(mHostActivity, R.string.copied, Toast.LENGTH_SHORT).show();
                         break;
                     case PASTE:
-                        editText.setText(IntentUtils.pasteText(mHostActivity));
+                        editText.setText(pasteText());
                         editText.setSelection(editText.getText().length());
                         break;
                 }
@@ -252,6 +255,19 @@ public class CustomKeyboard {
             }
         });
         return popupMenu;
+    }
+
+    private void copyText(String text){
+        ClipboardManager clipboard = (ClipboardManager) mHostActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("", text);
+        clipboard.setPrimaryClip(clip);
+    }
+
+    private String pasteText(){
+        ClipboardManager clipboard = (ClipboardManager) mHostActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+        if(clipboard.hasPrimaryClip()&&clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN))
+            return clipboard.getPrimaryClip().getItemAt(0).getText().toString();
+        else return "";
     }
 
 }

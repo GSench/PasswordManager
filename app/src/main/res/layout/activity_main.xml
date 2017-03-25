@@ -36,6 +36,7 @@
         android:id="@+id/keyboard_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:keyPreviewLayout ="@layout/key_preview"
         android:visibility="gone"
         android:focusable="true"
         android:focusableInTouchMode="true"

@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
      * */
     //TODO Separate windows' system to extended class
     //TODO Passwords' categories
+    //TODO Search
 
     public static final String APP_PREFERENCES = "AppPreferences";
 
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     private void setupKeyboard(){
-        keyboard = new CustomKeyboard(this, (KeyboardView) findViewById(R.id.keyboard_view));
+        keyboard = new CustomKeyboard(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
         keyboard.enableHapticFeedback(true);
     }
 
