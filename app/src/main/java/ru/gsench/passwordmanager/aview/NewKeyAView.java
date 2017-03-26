@@ -28,7 +28,7 @@ public class NewKeyAView extends AView implements NewKeyView {
 
     @Override
     protected ViewGroup getView() {
-        return null;
+        return viewHolder.main;
     }
 
     @Override

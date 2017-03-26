@@ -14,6 +14,7 @@ import ru.gsench.passwordmanager.AndroidInterface;
 import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.aview.EditAccountAView;
 import ru.gsench.passwordmanager.aview.KeyInputAView;
+import ru.gsench.passwordmanager.aview.NewKeyAView;
 import ru.gsench.passwordmanager.aview.PINInputAView;
 import ru.gsench.passwordmanager.aview.SelectBaseAView;
 import interactor.MainInteractor;
@@ -68,12 +69,7 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void setupAccountWindow(){
-        accountWindow = (EditAccountAView) new EditAccountAView(this, viewHolder.main).closeSelf(new function() {
-            @Override
-            public void run(String... p) {
-                closeView();
-            }
-        });
+        accountWindow = new EditAccountAView(this, viewHolder.main);
         keyboard.registerEditText(accountWindow.aViewHolder.editLogin, true);
         keyboard.registerEditText(accountWindow.aViewHolder.editName, true);
         keyboard.registerEditText(accountWindow.aViewHolder.editPassword, true);
@@ -130,6 +126,11 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Override
+    public void closeCurrentView() {
+        closeView();
+    }
+
+    @Override
     public void selectBaseWindow() {
         new SelectBaseAView(this, viewHolder.main, interactor)
                 .closeOnBackPressed(false)
@@ -143,7 +144,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void newKeyWindow() {
-        KeyInputAView aView = (KeyInputAView) new KeyInputAView(this, viewHolder.main, interactor).closeOnBackPressed(false);
+        NewKeyAView aView = (NewKeyAView) new NewKeyAView(this, viewHolder.main, interactor).closeOnBackPressed(false);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }

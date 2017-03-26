@@ -23,17 +23,19 @@ public class KeyInputPresenter {
     }
 
     public void onEnter(){
-        interactor.onKeyInput(view.getKeyInput(), new function() {
-            @Override
-            public void run(String... params) {
-                view.showIncorrectKeyToast();
-            }
-        }, new function() {
-            @Override
-            public void run(String... params) {
-                view.closeView();
-            }
-        });
+        interactor.onKeyInput(view.getKeyInput(),
+                new function() {
+                    @Override
+                    public void run(String... params) {
+                        view.closeView();
+                    }
+                }, //Correct
+                new function() {
+                    @Override
+                    public void run(String... params) {
+                        view.showIncorrectKeyToast();
+                    }
+                });  //Incorrect
     }
 
 }

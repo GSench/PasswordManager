@@ -48,7 +48,7 @@ public class MainInteractor {
         onBaseSelected(basePath);
     }
 
-    public void onKeyInput(final String key, final function onIncorrectKeyInput, final function onCorrectKeyInput){
+    public void onKeyInput(final String key, final function onCorrectKeyInput, final function onIncorrectKeyInput){
         system.doOnBackground(new function() {
             @Override
             public void run(String... params) {
@@ -92,14 +92,16 @@ public class MainInteractor {
         });
     }
 
+    private function closeViewFunc = new function() {
+        @Override
+        public void run(String... params) {
+            view.closeCurrentView();
+        }
+    };
+
     public void afterNewKeyInput(String newKey){
         newKeyInput = true;
-        onKeyInput(newKey, null, new function() {
-            @Override
-            public void run(String... params) {
-
-            }
-        });
+        onKeyInput(newKey, closeViewFunc, null);
     }
 
     public void onNewPIN(String pin){
@@ -117,7 +119,7 @@ public class MainInteractor {
         } else {
             system.saveInt(PIN_TRIES, 0);
             String key = system.getSavedString(KEY, null);
-            onKeyInput(key);
+            onKeyInput(key, closeViewFunc, null);
         }
     }
 

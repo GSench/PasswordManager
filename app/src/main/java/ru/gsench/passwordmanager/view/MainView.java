@@ -18,5 +18,6 @@ public interface MainView {
     public void unexpectedException();
     public void unableToEditBaseFile();
     public void unableToReadBaseFile();
+    public void closeCurrentView();
 
 }
