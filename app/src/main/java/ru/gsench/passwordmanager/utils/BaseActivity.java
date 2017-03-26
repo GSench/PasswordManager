@@ -1,11 +1,9 @@
-package ru.gsench.passwordmanager.activity;
+package ru.gsench.passwordmanager.utils;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
-import ru.gsench.passwordmanager.aview.AView;
 
 /**
  * Created by grish on 25.03.2017.

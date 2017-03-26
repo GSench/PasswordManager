@@ -14,8 +14,6 @@ public interface MainView {
     public void newKeyWindow();
     public void openPINWindow();
     public void newPINDialog();
-    public void onCorrectKeyInput();
-    public void onIncorrectKeyInput();
     public void unableToParseBase();
     public void unexpectedException();
     public void unableToEditBaseFile();

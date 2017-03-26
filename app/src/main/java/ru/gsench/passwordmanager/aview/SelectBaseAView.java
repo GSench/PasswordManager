@@ -1,6 +1,5 @@
 package ru.gsench.passwordmanager.aview;
 
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,6 +11,11 @@ import com.github.angads25.filepicker.view.FilePickerDialog;
 import java.io.File;
 
 import ru.gsench.passwordmanager.R;
+import interactor.MainInteractor;
+import ru.gsench.passwordmanager.presenter.SelectBasePresenter;
+import ru.gsench.passwordmanager.utils.AView;
+import ru.gsench.passwordmanager.utils.BaseActivity;
+import ru.gsench.passwordmanager.view.SelectBaseView;
 import ru.gsench.passwordmanager.viewholder.SelectBaseViewHolder;
 import utils.function;
 
@@ -19,31 +23,67 @@ import utils.function;
  * Created by grish on 11.03.2017.
  */
 
-public class SelectBaseWindow extends AView {
+public class SelectBaseAView extends AView implements SelectBaseView {
 
     private SelectBaseViewHolder viewHolder;
+    private SelectBasePresenter presenter;
 
-    public SelectBaseWindow(Context context, ViewGroup parent, final function onBaseSelected, final function onNewBaseSelected, final function onDefBaseSelected){
+    public SelectBaseAView(BaseActivity context, ViewGroup parent, MainInteractor interactor){
         super(context, parent);
         viewHolder = new SelectBaseViewHolder(context, parent);
+        presenter = new SelectBasePresenter(interactor, this);
+    }
+
+    @Override
+    public void start() {
+        presenter.start();
+    }
+
+    @Override
+    public void init() {
         viewHolder.chooseBase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestFile(DialogConfigs.FILE_SELECT, SelectBaseWindow.this.context.getString(R.string.select_file), onBaseSelected);
+                presenter.onExistBaseBtn();
             }
         });
         viewHolder.chooseNewBase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestFile(DialogConfigs.DIR_SELECT, SelectBaseWindow.this.context.getString(R.string.select_path), onNewBaseSelected);
+                presenter.onNewBaseBtn();
             }
         });
         viewHolder.useDefBase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onDefBaseSelected.run();
+                presenter.onDefBaseBtn();
             }
         });
+    }
+
+    @Override
+    public void openRequestFileDialog() {
+        requestFile(DialogConfigs.FILE_SELECT, SelectBaseAView.this.context.getString(R.string.select_file), new function() {
+            @Override
+            public void run(String... params) {
+                presenter.onFileSelected(params[0]);
+            }
+        });
+    }
+
+    @Override
+    public void openRequestDirDialog() {
+        requestFile(DialogConfigs.DIR_SELECT, SelectBaseAView.this.context.getString(R.string.select_path), new function() {
+            @Override
+            public void run(String... params) {
+                presenter.onDirSelected(params[0]);
+            }
+        });
+    }
+
+    @Override
+    public void closeView() {
+        closeSelf();
     }
 
     private void requestFile(int selection_type, String title, final function doAfter){
@@ -70,4 +110,5 @@ public class SelectBaseWindow extends AView {
     public ViewGroup getView(){
         return viewHolder.main;
     }
+
 }

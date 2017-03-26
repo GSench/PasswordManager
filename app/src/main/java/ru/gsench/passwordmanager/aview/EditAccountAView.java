@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import account_system.Account;
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.utils.AView;
 import ru.gsench.passwordmanager.viewholder.EditAccountViewHolder;
 import ru.gsench.passwordmanager.utils.MyTextWatcher;
 import ru.gsench.passwordmanager.utils.RandomPassword;
@@ -18,7 +19,7 @@ import static ru.gsench.passwordmanager.activity.MainActivity.APP_PREFERENCES;
  * Created by Григорий Сенченок on 10.03.2017.
  */
 
-public class EditAccountWindow extends AView {
+public class EditAccountAView extends AView {
 
     //TODO Rich random settings
 
@@ -28,7 +29,7 @@ public class EditAccountWindow extends AView {
     public EditAccountViewHolder aViewHolder;
     private int currentID = -1;
 
-    public EditAccountWindow(Context context, ViewGroup parent){
+    public EditAccountAView(Context context, ViewGroup parent){
         super(context, parent);
         aViewHolder = new EditAccountViewHolder(context, parent);
         updateRandomBtnsWithPref();

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.andrognito.pinlockview.PinLockListener;
 
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.utils.AView;
 import ru.gsench.passwordmanager.viewholder.PINInputViewHolder;
 import utils.function;
 
@@ -17,12 +18,12 @@ import utils.function;
  * Created by Григорий Сенченок on 12.03.2017.
  */
 
-public class PINInputWindow extends AView{
+public class PINInputAView extends AView {
 
     private PINInputViewHolder viewHolder;
     private CountDownTimer timer;
 
-    public PINInputWindow(Context context, ViewGroup parent, final function onPinInput, final function onResetPin, String resetPinBtn){
+    public PINInputAView(Context context, ViewGroup parent, final function onPinInput, final function onResetPin, String resetPinBtn){
         super(context, parent);
         viewHolder = new PINInputViewHolder(context, parent);
         viewHolder.pinView.attachIndicatorDots(viewHolder.dots);

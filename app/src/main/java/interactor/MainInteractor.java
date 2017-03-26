@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager.presenter;
+package interactor;
 
 import org.xml.sax.SAXException;
 
@@ -17,7 +17,7 @@ import utils.function;
  * Created by grish on 26.02.2017.
  */
 
-public class MainPresenter {
+public class MainInteractor {
 
     private static final String ACCOUNT_BASE = "base_path";
     private static final String KEY = "key";
@@ -34,7 +34,7 @@ public class MainPresenter {
     private boolean newBaseSelected = false;
     private boolean newKeyInput = false;
 
-    public MainPresenter(MainView mainView, SystemInterface system){
+    public MainInteractor(MainView mainView, SystemInterface system){
         view=mainView;
         this.system=system;
     }
@@ -48,7 +48,7 @@ public class MainPresenter {
         onBaseSelected(basePath);
     }
 
-    public void onKeyInput(final String key){
+    public void onKeyInput(final String key, final function onIncorrectKeyInput, final function onCorrectKeyInput){
         system.doOnBackground(new function() {
             @Override
             public void run(String... params) {
@@ -66,7 +66,7 @@ public class MainPresenter {
                     system.doOnForeground(new function() {
                         @Override
                         public void run(String... params) {
-                            view.onIncorrectKeyInput();
+                            onIncorrectKeyInput.run();
                         }
                     });
                     return;
@@ -82,7 +82,7 @@ public class MainPresenter {
                 system.doOnForeground(new function() {
                     @Override
                     public void run(String... params) {
-                        view.onCorrectKeyInput();
+                        onCorrectKeyInput.run();
                         openAccountBase();
                         if(newKeyInput) saveAccountBase();
                         if(newBaseSelected) view.newPINDialog();
@@ -94,7 +94,12 @@ public class MainPresenter {
 
     public void afterNewKeyInput(String newKey){
         newKeyInput = true;
-        onKeyInput(newKey);
+        onKeyInput(newKey, null, new function() {
+            @Override
+            public void run(String... params) {
+
+            }
+        });
     }
 
     public void onNewPIN(String pin){
