@@ -72,7 +72,15 @@ public class AccountSystem {
         return accounts!=null ? accounts.size() : -1;
     }
 
-    public void addAccount(Account account){
+    public void editAccount(Account account){
+        for(Account account1: accounts){
+            if(account1.getId()==account.getId()){
+                account1.setName(account.getName());
+                account1.setLogin(account.getLogin());
+                account1.setPassword(account.getPassword());
+                return;
+            }
+        }
         accounts.add(account);
     }
 

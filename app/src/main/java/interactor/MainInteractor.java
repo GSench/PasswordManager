@@ -200,13 +200,12 @@ public class MainInteractor {
         view.viewAccounts(accountSystem);
     }
 
-    public void addNewAccount(Account account){
-        accountSystem.addAccount(account);
-        saveAccountBase();
-        openAccountBase();
+    public int getAccountsCount(){
+        return accountSystem.getAccountsCount();
     }
 
     public void editAccount(Account account){
+        accountSystem.editAccount(account);
         saveAccountBase();
         openAccountBase();
     }

@@ -89,6 +89,19 @@ public class AndroidInterface implements SystemInterface {
     }
 
     @Override
+    public boolean getSavedBoolean(String title, boolean b) {
+        return act.getSharedPreferences(SPREF, Context.MODE_PRIVATE).getBoolean(title, b);
+    }
+
+    @Override
+    public void saveBoolean(String title, boolean b) {
+        act.getSharedPreferences(SPREF, Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean(title, b)
+                .commit();
+    }
+
+    @Override
     public void createFileIfNotExist(String path) throws IOException {
         File file = new File(path);
         if(!file.exists()){

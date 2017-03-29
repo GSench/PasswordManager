@@ -18,6 +18,8 @@ public interface SystemInterface {
     public void saveInt(String title, int i);
     public long getSavedLong(String title, long def);
     public void saveLong(String title, long i);
+    public boolean getSavedBoolean(String title, boolean b);
+    public void saveBoolean(String title, boolean b);
     public void createFileIfNotExist(String path) throws IOException;
     public void deleteFile(String path);
     public void removeSaved(String str);

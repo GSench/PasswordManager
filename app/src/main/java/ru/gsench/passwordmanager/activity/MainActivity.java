@@ -43,7 +43,6 @@ public class MainActivity extends BaseActivity implements MainView {
     MainInteractor interactor;
     AccountListAdapter accountListAdapter;
     MainViewHolder viewHolder;
-    EditAccountAView accountWindow;
     CustomKeyboard keyboard;
     PermissionManager permissionManager;
 
@@ -53,7 +52,6 @@ public class MainActivity extends BaseActivity implements MainView {
         setContentView(R.layout.activity_main, R.id.dialog_content);
         viewHolder = new MainViewHolder(this);
         setupKeyboard();
-        setupAccountWindow();
         permissionManager = new PermissionManager(this);
         permissionManager.requestBasePermissions(this, new function() {
             @Override
@@ -67,13 +65,6 @@ public class MainActivity extends BaseActivity implements MainView {
     private void setupKeyboard(){
         keyboard = new CustomKeyboard(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
         keyboard.enableHapticFeedback(true);
-    }
-
-    private void setupAccountWindow(){
-        accountWindow = new EditAccountAView(this, viewHolder.main);
-        keyboard.registerEditText(accountWindow.aViewHolder.editLogin, true);
-        keyboard.registerEditText(accountWindow.aViewHolder.editName, true);
-        keyboard.registerEditText(accountWindow.aViewHolder.editPassword, true);
     }
 
     @Override
@@ -187,18 +178,7 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     public void onAddClick(View v){
-        accountWindow.clearAddAccDialog();
-        accountWindow.setOnDialogOkClick(new function() {
-            @Override
-            public void run(String... params) {
-                if(accountWindow.checkAccDialogFilling()) {
-                    closeView();
-                    interactor.addNewAccount(accountWindow.getAccount());
-                }
-            }
-        });
-        accountWindow.closeOnBackPressed(true);
-        openView(accountWindow);
+        editAccount(null);
     }
 
     @Override
@@ -226,24 +206,13 @@ public class MainActivity extends BaseActivity implements MainView {
                 .show();
     }
 
-    private void editAccount(final Account account){
-        accountWindow.clearAddAccDialog();
-        accountWindow.setAccount(account);
-        accountWindow.setOnDialogOkClick(new function() {
-            @Override
-            public void run(String... params) {
-                if(accountWindow.checkAccDialogFilling()) {
-                    closeView();
-                    Account account1 = accountWindow.getAccount();
-                    account.setName(account1.getName());
-                    account.setLogin(account1.getLogin());
-                    account.setPassword(account1.getPassword());
-                    interactor.editAccount(account);
-                }
-            }
-        });
-        accountWindow.closeOnBackPressed(true);
-        openView(accountWindow);
+    private void editAccount(Account account){
+        EditAccountAView view = (EditAccountAView) new EditAccountAView(this, viewHolder.dialogContent, interactor, account)
+                .closeOnBackPressed(true);
+        keyboard.registerEditText(view.aViewHolder.editLogin, true);
+        keyboard.registerEditText(view.aViewHolder.editName, true);
+        keyboard.registerEditText(view.aViewHolder.editPassword, true);
+        view.open();
     }
 
     @Override

@@ -1,106 +1,94 @@
 package ru.gsench.passwordmanager.aview;
 
-import android.content.Context;
 import android.text.Editable;
 import android.view.View;
 import android.view.ViewGroup;
 
 import account_system.Account;
+import interactor.MainInteractor;
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.presenter.EditAccountPresenter;
 import ru.gsench.passwordmanager.utils.AView;
 import ru.gsench.passwordmanager.utils.BaseActivity;
-import ru.gsench.passwordmanager.viewholder.EditAccountViewHolder;
 import ru.gsench.passwordmanager.utils.MyTextWatcher;
-import ru.gsench.passwordmanager.utils.RandomPassword;
-import utils.function;
-
-import static ru.gsench.passwordmanager.activity.MainActivity.APP_PREFERENCES;
+import ru.gsench.passwordmanager.view.EditAccountView;
+import ru.gsench.passwordmanager.viewholder.EditAccountViewHolder;
 
 /**
  * Created by Григорий Сенченок on 10.03.2017.
  */
 
-public class EditAccountAView extends AView {
+public class EditAccountAView extends AView implements EditAccountView {
 
     //TODO Rich random settings
 
-    private static final String FULLY_RANDOM = "fully_random";
-    private static final String WITHOUT_SYM = "without_sym";
-
     public EditAccountViewHolder aViewHolder;
-    private int currentID = -1;
+    private EditAccountPresenter presenter;
 
-    public EditAccountAView(BaseActivity context, ViewGroup parent){
+    public EditAccountAView(BaseActivity context, ViewGroup parent, MainInteractor interactor, Account account){
         super(context, parent);
         aViewHolder = new EditAccountViewHolder(context, parent);
-        updateRandomBtnsWithPref();
+        presenter = new EditAccountPresenter(interactor, this, account);
+    }
+
+    @Override
+    public void init() {
+        aViewHolder.randomPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onRandomPWBtn();
+            }
+        });
         aViewHolder.randomPINCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                aViewHolder.editPassword.setText(RandomPassword.getRandomPINCode());
+                presenter.onRandomPINBtn();
             }
         });
         aViewHolder.randomLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                aViewHolder.editLogin.setText(RandomPassword.getRandomLogin());
+                presenter.onRandomLoginBtn();
             }
         });
         aViewHolder.editName.addTextChangedListener(new MyTextWatcher(){
             @Override
             public void afterTextChanged(Editable editable) {
-                aViewHolder.nameInput.setErrorEnabled(false);
-                aViewHolder.nameInput.setError(null);
+                presenter.onNameInput();
             }
         });
         aViewHolder.editLogin.addTextChangedListener(new MyTextWatcher(){
             @Override
             public void afterTextChanged(Editable editable) {
-                aViewHolder.loginInput.setErrorEnabled(false);
-                aViewHolder.loginInput.setError(null);
+                presenter.onLoginInput();
             }
         });
         aViewHolder.editPassword.addTextChangedListener(new MyTextWatcher(){
             @Override
             public void afterTextChanged(Editable editable) {
-                aViewHolder.passwordInput.setErrorEnabled(false);
-                aViewHolder.passwordInput.setError(null);
+                presenter.onPWInput();
             }
         });
         aViewHolder.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeSelf();
+                presenter.onCancelBtn();
             }
         });
-    }
-
-    public void updateRandomBtnsWithPref(){
-        aViewHolder.randomPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                aViewHolder.editPassword.setText(RandomPassword.getRandomPassword(fullyRandomPref(), withoutSymPref()));
-            }
-        });
-    }
-
-    private boolean fullyRandomPref(){
-        return context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE).getBoolean(FULLY_RANDOM, false);
-    }
-
-    private boolean withoutSymPref(){
-        return context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE).getBoolean(WITHOUT_SYM, false);
-    }
-
-    public void setOnDialogOkClick(final function action){
         aViewHolder.ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                action.run();
+                presenter.onOKBtn();
             }
         });
     }
 
+    @Override
+    public void closeView() {
+        closeSelf();
+    }
+
+    @Override
     public void clearAddAccDialog(){
         aViewHolder.nameInput.setErrorEnabled(false);
         aViewHolder.nameInput.setError(null);
@@ -113,23 +101,34 @@ public class EditAccountAView extends AView {
         aViewHolder.editPassword.setText("");
     }
 
-    public boolean checkAccDialogFilling(){
-        if(aViewHolder.editName.getText().toString().equals("")){
-            aViewHolder.nameInput.setErrorEnabled(true);
-            aViewHolder.nameInput.setError(context.getString(R.string.input_name_error));
-            return false;
-        }
-        if(aViewHolder.editLogin.getText().toString().equals("")){
-            aViewHolder.loginInput.setErrorEnabled(true);
-            aViewHolder.loginInput.setError(context.getString(R.string.input_login_error));
-            return false;
-        }
-        if(aViewHolder.editPassword.getText().toString().equals("")){
-            aViewHolder.passwordInput.setErrorEnabled(true);
-            aViewHolder.passwordInput.setError(context.getString(R.string.input_password_error));
-            return false;
-        }
-        return true;
+    @Override
+    public String getName() {
+        return aViewHolder.editName.getText().toString();
+    }
+
+    @Override
+    public String getLogin() {
+        return aViewHolder.editLogin.getText().toString();
+    }
+
+    @Override
+    public String getPassword() {
+        return aViewHolder.editPassword.getText().toString();
+    }
+
+    @Override
+    public void setName(String name) {
+        aViewHolder.editName.setText(name);
+    }
+
+    @Override
+    public void setLogin(String login) {
+        aViewHolder.editLogin.setText(login);
+    }
+
+    @Override
+    public void setPassword(String pw) {
+        aViewHolder.editPassword.setText(pw);
     }
 
     @Override
@@ -139,23 +138,43 @@ public class EditAccountAView extends AView {
 
     @Override
     protected void start() {
-
+        presenter.start();
     }
 
-    public Account getAccount(){
-        return new Account(
-                currentID,
-                aViewHolder.editName.getText().toString(),
-                aViewHolder.editLogin.getText().toString(),
-                aViewHolder.editPassword.getText().toString()
-        );
+    @Override
+    public void setNameError() {
+        aViewHolder.nameInput.setErrorEnabled(true);
+        aViewHolder.nameInput.setError(context.getString(R.string.input_name_error));
     }
 
-    public void setAccount(Account account){
-        currentID=account.getId();
-        aViewHolder.editName.setText(account.getName());
-        aViewHolder.editLogin.setText(account.getLogin());
-        aViewHolder.editPassword.setText(account.getPassword());
+    @Override
+    public void setLoginError() {
+        aViewHolder.loginInput.setErrorEnabled(true);
+        aViewHolder.loginInput.setError(context.getString(R.string.input_login_error));
+    }
+
+    @Override
+    public void setPasswordError() {
+        aViewHolder.passwordInput.setErrorEnabled(true);
+        aViewHolder.passwordInput.setError(context.getString(R.string.input_password_error));
+    }
+
+    @Override
+    public void removeNameError() {
+        aViewHolder.nameInput.setErrorEnabled(false);
+        aViewHolder.nameInput.setError(null);
+    }
+
+    @Override
+    public void removeLoginError() {
+        aViewHolder.loginInput.setErrorEnabled(false);
+        aViewHolder.loginInput.setError(null);
+    }
+
+    @Override
+    public void removePasswordError() {
+        aViewHolder.passwordInput.setErrorEnabled(false);
+        aViewHolder.passwordInput.setError(null);
     }
 
 }
