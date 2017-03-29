@@ -28,7 +28,7 @@ public class MainInteractor {
     private static final int PIN_LOCK_TRIES = 3;
 
     private MainView view;
-    private SystemInterface system;
+    public SystemInterface system;
     private AccountSystem accountSystem;
 
     private boolean newBaseSelected = false;

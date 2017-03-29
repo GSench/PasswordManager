@@ -1,39 +1,56 @@
 package ru.gsench.passwordmanager.aview;
 
-import android.content.Context;
-import android.os.CountDownTimer;
+import android.content.DialogInterface;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.andrognito.pinlockview.PinLockListener;
 
+import interactor.MainInteractor;
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.presenter.PINInputPresenter;
 import ru.gsench.passwordmanager.utils.AView;
+import ru.gsench.passwordmanager.utils.BaseActivity;
+import ru.gsench.passwordmanager.view.PINInputView;
 import ru.gsench.passwordmanager.viewholder.PINInputViewHolder;
-import utils.function;
 
 /**
  * Created by Григорий Сенченок on 12.03.2017.
  */
 
-public class PINInputAView extends AView {
+public class PINInputAView extends AView implements PINInputView{
 
     private PINInputViewHolder viewHolder;
-    private CountDownTimer timer;
+    private PINInputPresenter presenter;
 
-    public PINInputAView(Context context, ViewGroup parent, final function onPinInput, final function onResetPin, String resetPinBtn){
+    public PINInputAView(BaseActivity context, ViewGroup parent, MainInteractor interactor){
         super(context, parent);
         viewHolder = new PINInputViewHolder(context, parent);
+        presenter = new PINInputPresenter(interactor, this);
+    }
+
+    @Override
+    public ViewGroup getView(){
+        return viewHolder.main;
+    }
+
+    @Override
+    protected void start() {
+        presenter.start();
+    }
+
+    @Override
+    public void init() {
         viewHolder.pinView.attachIndicatorDots(viewHolder.dots);
         viewHolder.pinView.setPinLength(4);
         viewHolder.pinView.setTextColor(ContextCompat.getColor(context, R.color.pin_color));
         viewHolder.pinView.setPinLockListener(new PinLockListener() {
             @Override
             public void onComplete(String pin) {
-                viewHolder.pinView.resetPinLockView();
-                onPinInput.run(pin);
+                presenter.onPINInput(pin);
             }
 
             @Override
@@ -46,52 +63,66 @@ public class PINInputAView extends AView {
 
             }
         });
-        if(resetPinBtn!=null&&!resetPinBtn.equals("")){
-            viewHolder.resetPIN.setVisibility(View.VISIBLE);
-            viewHolder.resetPIN.setText(resetPinBtn);
-            viewHolder.resetPIN.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onResetPin.run();
-                }
-            });
-        }
+        viewHolder.resetPIN.setText(context.getString(R.string.reset_pin));
+        viewHolder.resetPIN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onResetBtn();
+            }
+        });
     }
 
     @Override
-    public ViewGroup getView(){
-        return viewHolder.main;
+    public void closeView() {
+        closeSelf();
     }
 
-    public void blockPINFor(long time){
-        if(timer!=null) return;
-        timer = new CountDownTimer(time, 1000) {
-            @Override
-            public void onTick(long l) {
-                viewHolder.pinMsg.setText(context.getString(R.string.pin_retry, l/1000));
-            }
+    @Override
+    public void resetPINInput() {
+        viewHolder.pinView.resetPinLockView();
+    }
 
-            @Override
-            public void onFinish() {
-                viewHolder.block.setOnTouchListener(null);
-                viewHolder.pinMsg.setText(null);
-                viewHolder.pinMsg.setVisibility(View.GONE);
-                timer=null;
-            }
-        };
+    @Override
+    public void lockPIN() {
         viewHolder.block.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return true;
             }
         });
-        viewHolder.pinMsg.setVisibility(View.VISIBLE);
-        viewHolder.pinMsg.setText(context.getString(R.string.pin_retry, time/1000));
-        timer.start();
     }
 
-    public void setMessage(String msg){
-        viewHolder.pinMsg.setVisibility(View.VISIBLE);
-        viewHolder.pinMsg.setText(msg);
+    @Override
+    public void unlockPIN() {
+        viewHolder.block.setOnTouchListener(null);
     }
+
+    @Override
+    public void setRetryLockMsg(int secLeft) {
+        viewHolder.pinMsg.setVisibility(View.VISIBLE);
+        viewHolder.pinMsg.setText(context.getString(R.string.pin_retry, secLeft));
+    }
+
+    @Override
+    public void removeMsg() {
+        viewHolder.pinMsg.setText(null);
+        viewHolder.pinMsg.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showResetPINConfirmDialog() {
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.reset_pin)
+                .setMessage(R.string.reset_pin_msg)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        presenter.onResetConfirmBtn();
+                    }
+                })
+                .setNeutralButton(R.string.cancel, null)
+                .create()
+                .show();
+    }
+
 }

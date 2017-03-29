@@ -29,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         });
         aViewContentView.addView(view.getView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        view.start();
     }
 
     protected void closeView(){

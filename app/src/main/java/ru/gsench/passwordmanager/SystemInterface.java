@@ -23,4 +23,5 @@ public interface SystemInterface {
     public void removeSaved(String str);
     public void doOnBackground(function background);
     public void doOnForeground(function function);
+    public void countDown(long time, long interval, function onTick, function onFinish);
 }

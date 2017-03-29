@@ -15,6 +15,7 @@ import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.aview.EditAccountAView;
 import ru.gsench.passwordmanager.aview.KeyInputAView;
 import ru.gsench.passwordmanager.aview.NewKeyAView;
+import ru.gsench.passwordmanager.aview.NewPINAView;
 import ru.gsench.passwordmanager.aview.PINInputAView;
 import ru.gsench.passwordmanager.aview.SelectBaseAView;
 import interactor.MainInteractor;
@@ -151,38 +152,9 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void openPINWindow() {
-        final PINInputAView PINWindow[] = new PINInputAView[]{null};
-        PINWindow[0] = (PINInputAView) new PINInputAView(this, viewHolder.main, new function() {
-            @Override
-            public void run(String... params) {
-                try {
-                    interactor.onPINInput(params[0]);
-                } catch (MainInteractor.BlockPINException e) {
-                }
-                long block = interactor.isPINBlocked();
-                if (block > 0) PINWindow[0].blockPINFor(block);
-            }
-        }, new function() {
-            @Override
-            public void run(String... params) {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle(R.string.reset_pin)
-                        .setMessage(R.string.reset_pin_msg)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                closeView();
-                                interactor.onResetPINBtn();
-                            }
-                        })
-                        .setNeutralButton(R.string.cancel, null)
-                        .create()
-                        .show();
-            }
-        }, getString(R.string.reset_pin)).closeOnBackPressed(false);
-        long block = interactor.isPINBlocked();
-        if(block>0) PINWindow[0].blockPINFor(block);
-        openView(PINWindow[0]);
+        new PINInputAView(this, viewHolder.main, interactor)
+                .closeOnBackPressed(false)
+                .open();
     }
 
     @Override
@@ -209,31 +181,9 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void newPINWindow(){
-        final String[] pin1 = {null};
-        final PINInputAView[] window = {null};
-        window[0] = (PINInputAView) new PINInputAView(MainActivity.this, viewHolder.main, new function() {
-            @Override
-            public void run(String... params) {
-                if(pin1[0]!=null){
-                    if(pin1[0].equals(params[0])){
-                        closeView();
-                        interactor.onNewPIN(params[0]);
-                    } else {
-                        window[0].setMessage(getString(R.string.pins_not_equal));
-                        pin1[0] = null;
-                    }
-                } else {
-                    window[0].setMessage(getString(R.string.reenter_pin));
-                    pin1[0] = params[0];
-                }
-            }
-        }, new function() {
-            @Override
-            public void run(String... params) {
-                closeView();
-            }
-        }, getString(R.string.cancel)).closeOnBackPressed(true);
-        openView(window[0]);
+        new NewPINAView(MainActivity.this, viewHolder.main, interactor)
+                .closeOnBackPressed(true)
+                .open();
     }
 
     public void onAddClick(View v){

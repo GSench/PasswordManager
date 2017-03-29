@@ -1,6 +1,7 @@
 package ru.gsench.passwordmanager;
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 
 import org.apache.commons.io.IOUtils;
@@ -130,6 +131,23 @@ public class AndroidInterface implements SystemInterface {
                 function.run();
             }
         });
+    }
+
+    @Override
+    public void countDown(long time, long interval, final function onTick, final function onFinish) {
+        new CountDownTimer(time, interval){
+
+            @Override
+            public void onTick(long l) {
+                onTick.run(l+"");
+            }
+
+            @Override
+            public void onFinish() {
+                onFinish.run();
+            }
+
+        }.start();
     }
 
 }

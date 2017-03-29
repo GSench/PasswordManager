@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import account_system.Account;
 import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.utils.AView;
+import ru.gsench.passwordmanager.utils.BaseActivity;
 import ru.gsench.passwordmanager.viewholder.EditAccountViewHolder;
 import ru.gsench.passwordmanager.utils.MyTextWatcher;
 import ru.gsench.passwordmanager.utils.RandomPassword;
@@ -29,7 +30,7 @@ public class EditAccountAView extends AView {
     public EditAccountViewHolder aViewHolder;
     private int currentID = -1;
 
-    public EditAccountAView(Context context, ViewGroup parent){
+    public EditAccountAView(BaseActivity context, ViewGroup parent){
         super(context, parent);
         aViewHolder = new EditAccountViewHolder(context, parent);
         updateRandomBtnsWithPref();
@@ -69,7 +70,7 @@ public class EditAccountAView extends AView {
         aViewHolder.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeSelf.run();
+                closeSelf();
             }
         });
     }
@@ -134,6 +135,11 @@ public class EditAccountAView extends AView {
     @Override
     public ViewGroup getView(){
         return aViewHolder.main;
+    }
+
+    @Override
+    protected void start() {
+
     }
 
     public Account getAccount(){

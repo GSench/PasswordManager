@@ -30,6 +30,7 @@
     <string name="create_pin_msg">You can remember key in app and input only PIN/</string>
     <string name="pin_retry">Retry over %d sec</string>
     <string name="reset_pin">Reset PIN</string>
+    <string name="create_pin">Create PIN</string>
     <string name="reenter_pin">Confirm new PIN</string>
     <string name="pins_not_equal">PINs are not equal!</string>
     <string name="reenter_key">Confirm new Key</string>
