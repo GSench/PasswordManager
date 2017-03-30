@@ -10,25 +10,24 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import ru.gsench.passwordmanager.domain.account_system.Account;
-import ru.gsench.passwordmanager.domain.account_system.AccountSystem;
-import ru.gsench.passwordmanager.presentation.AndroidInterface;
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.domain.account_system.Account;
+import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
+import ru.gsench.passwordmanager.domain.utils.function;
+import ru.gsench.passwordmanager.presentation.AndroidInterface;
+import ru.gsench.passwordmanager.presentation.presenter.MainPresenter;
+import ru.gsench.passwordmanager.presentation.utils.BaseActivity;
+import ru.gsench.passwordmanager.presentation.utils.CustomKeyboard;
+import ru.gsench.passwordmanager.presentation.view.MainView;
 import ru.gsench.passwordmanager.presentation.view.aview.EditAccountAView;
 import ru.gsench.passwordmanager.presentation.view.aview.KeyInputAView;
 import ru.gsench.passwordmanager.presentation.view.aview.NewKeyAView;
 import ru.gsench.passwordmanager.presentation.view.aview.NewPINAView;
 import ru.gsench.passwordmanager.presentation.view.aview.PINInputAView;
 import ru.gsench.passwordmanager.presentation.view.aview.SelectBaseAView;
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
-import ru.gsench.passwordmanager.presentation.presenter.MainPresenter;
-import ru.gsench.passwordmanager.presentation.utils.BaseActivity;
-import ru.gsench.passwordmanager.presentation.utils.CustomKeyboard;
-import ru.gsench.passwordmanager.presentation.view.MainView;
 import ru.gsench.passwordmanager.presentation.view.view_etc.AccountListAdapter;
 import ru.gsench.passwordmanager.presentation.view.view_etc.PermissionManager;
 import ru.gsench.passwordmanager.presentation.viewholder.MainViewHolder;
-import ru.gsench.passwordmanager.domain.utils.function;
 
 public class MainActivity extends BaseActivity implements MainView {
 
@@ -43,10 +42,10 @@ public class MainActivity extends BaseActivity implements MainView {
 
     public static final String APP_PREFERENCES = "AppPreferences";
 
-    AccountListAdapter accountListAdapter;
-    MainViewHolder viewHolder;
-    CustomKeyboard keyboard;
-    PermissionManager permissionManager;
+    private AccountListAdapter accountListAdapter;
+    private MainViewHolder viewHolder;
+    private CustomKeyboard keyboard;
+    private PermissionManager permissionManager;
 
     private MainPresenter presenter;
 
@@ -98,6 +97,7 @@ public class MainActivity extends BaseActivity implements MainView {
         } else {
             accountListAdapter.notifyDataSetChanged(accounts);
         }
+        accountListAdapter.closeAllItems();
     }
 
     @Override
