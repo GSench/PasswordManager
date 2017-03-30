@@ -1,9 +1,10 @@
 package ru.gsench.passwordmanager.presentation.presenter;
 
-import ru.gsench.passwordmanager.domain.account_system.Account;
-import ru.gsench.passwordmanager.domain.account_system.AccountSystem;
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
+import java.util.ArrayList;
+
 import ru.gsench.passwordmanager.domain.SystemInterface;
+import ru.gsench.passwordmanager.domain.account_system.Account;
+import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
 import ru.gsench.passwordmanager.presentation.view.MainView;
 
 /**
@@ -69,7 +70,7 @@ public class MainPresenter {
         view.openPINWindow(interactor);
     }
 
-    public void viewAccounts(AccountSystem accountSystem) {
+    public void viewAccounts(ArrayList<Account> accountSystem) {
         view.viewAccounts(accountSystem);
     }
 

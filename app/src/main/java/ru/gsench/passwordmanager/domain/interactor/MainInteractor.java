@@ -193,14 +193,14 @@ public class MainInteractor {
             mainPresenter.keyInputWindow();
     }
 
-    public void resetBase(){
+    private void resetBase(){
         system.removeSaved(ACCOUNT_BASE);
         resetPIN();
         onStart();
     }
 
     private void openAccountBase(){
-        mainPresenter.viewAccounts(accountSystem);
+        mainPresenter.viewAccounts(accountSystem.getAccounts());
     }
 
     public int getAccountsCount(){

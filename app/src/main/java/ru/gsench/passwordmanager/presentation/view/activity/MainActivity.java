@@ -8,6 +8,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import ru.gsench.passwordmanager.domain.account_system.Account;
 import ru.gsench.passwordmanager.domain.account_system.AccountSystem;
 import ru.gsench.passwordmanager.presentation.AndroidInterface;
@@ -79,7 +81,7 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Override
-    public void viewAccounts(AccountSystem accounts) {
+    public void viewAccounts(ArrayList<Account> accounts) {
         if(accountListAdapter==null){
             accountListAdapter=new AccountListAdapter(this, accounts, new AccountListAdapter.AccountListInterface() {
                 @Override
@@ -94,7 +96,7 @@ public class MainActivity extends BaseActivity implements MainView {
             });
             viewHolder.accountList.setAdapter(accountListAdapter);
         } else {
-            accountListAdapter.notifyDataSetChanged();
+            accountListAdapter.notifyDataSetChanged(accounts);
         }
     }
 

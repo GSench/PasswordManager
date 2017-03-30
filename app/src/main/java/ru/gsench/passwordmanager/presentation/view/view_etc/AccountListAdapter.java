@@ -9,9 +9,10 @@ import android.widget.Toast;
 
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
-import ru.gsench.passwordmanager.domain.account_system.Account;
-import ru.gsench.passwordmanager.domain.account_system.AccountSystem;
+import java.util.ArrayList;
+
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.domain.account_system.Account;
 import ru.gsench.passwordmanager.presentation.utils.IntentUtils;
 
 
@@ -22,12 +23,13 @@ import ru.gsench.passwordmanager.presentation.utils.IntentUtils;
 public class AccountListAdapter extends BaseSwipeAdapter {
 
     private Context context;
-    private AccountSystem accountSystem;
+
+    private ArrayList<Account> accounts;
     private AccountListInterface listInterface;
 
-    public AccountListAdapter(Context context, AccountSystem accountSystem, AccountListInterface accountListInterface){
+    public AccountListAdapter(Context context, ArrayList<Account> accounts, AccountListInterface accountListInterface){
         this.context=context;
-        this.accountSystem=accountSystem;
+        this.accounts=accounts;
         listInterface=accountListInterface;
     }
 
@@ -89,19 +91,24 @@ public class AccountListAdapter extends BaseSwipeAdapter {
         });
     }
 
+    public void notifyDataSetChanged(ArrayList<Account> accounts){
+        this.accounts=accounts;
+        super.notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
-        return accountSystem.getAccountsCount();
+        return accounts.size();
     }
 
     @Override
     public Account getItem(int i) {
-        return accountSystem.getAccount(i);
+        return accounts.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return accountSystem.getAccount(i).getId();
+        return getItem(i).getId();
     }
 
     public interface AccountListInterface{

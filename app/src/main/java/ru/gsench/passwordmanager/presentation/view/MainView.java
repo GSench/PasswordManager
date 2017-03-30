@@ -1,7 +1,8 @@
 package ru.gsench.passwordmanager.presentation.view;
 
+import java.util.ArrayList;
+
 import ru.gsench.passwordmanager.domain.account_system.Account;
-import ru.gsench.passwordmanager.domain.account_system.AccountSystem;
 import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
 
 /**
@@ -12,7 +13,7 @@ public interface MainView {
 
     public void init();
     public void exit();
-    public void viewAccounts(AccountSystem accounts);
+    public void viewAccounts(ArrayList<Account> accounts);
     public void keyInputWindow(MainInteractor interactor);
     public void selectBaseWindow(MainInteractor interactor);
     public void newKeyWindow(MainInteractor interactor);

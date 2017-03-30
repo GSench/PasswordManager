@@ -64,8 +64,8 @@ public class AccountSystem {
         return AESEncryptor.encrypt(base.getBytes(), key, KEY_SIZE);
     }
 
-    public Account getAccount(int i){
-        return accounts!=null ? accounts.get(i) : null;
+    public ArrayList<Account> getAccounts(){
+        return accounts;
     }
 
     public int getAccountsCount(){
