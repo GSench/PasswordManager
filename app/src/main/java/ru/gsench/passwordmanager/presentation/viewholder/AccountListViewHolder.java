@@ -21,7 +21,7 @@ public class AccountListViewHolder {
 
     public AccountListViewHolder(Context context, ViewGroup parent){
         main = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.account_list, parent, false);
-        accountList = (ListView) parent.findViewById(R.id.account_list);
-        fab = (FloatingActionButton) parent.findViewById(R.id.fab);
+        accountList = (ListView) main.findViewById(R.id.account_list);
+        fab = (FloatingActionButton) main.findViewById(R.id.fab);
     }
 }
