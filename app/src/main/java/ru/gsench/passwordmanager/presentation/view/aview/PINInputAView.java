@@ -11,9 +11,10 @@ import com.andrognito.pinlockview.PinLockListener;
 
 import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.domain.interactor.PINInputUseCase;
 import ru.gsench.passwordmanager.presentation.presenter.PINInputPresenter;
 import ru.gsench.passwordmanager.presentation.utils.AView;
-import ru.gsench.passwordmanager.presentation.utils.BaseActivity;
+import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
 import ru.gsench.passwordmanager.presentation.view.PINInputView;
 import ru.gsench.passwordmanager.presentation.viewholder.PINInputViewHolder;
 
@@ -26,8 +27,8 @@ public class PINInputAView extends AView implements PINInputView{
     private PINInputViewHolder viewHolder;
     private PINInputPresenter presenter;
 
-    public PINInputAView(BaseActivity context, ViewGroup parent, MainInteractor interactor){
-        super(context, parent);
+    public PINInputAView(AViewContainer container, PINInputUseCase interactor){
+        super(container);
         viewHolder = new PINInputViewHolder(context, parent);
         presenter = new PINInputPresenter(interactor, this);
     }

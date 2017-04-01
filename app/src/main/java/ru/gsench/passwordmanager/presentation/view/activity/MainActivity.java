@@ -1,35 +1,36 @@
 package ru.gsench.passwordmanager.presentation.view.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.view.View;
-import android.widget.Toast;
-
-import java.util.ArrayList;
+import android.support.v7.app.AppCompatActivity;
 
 import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.domain.account_system.Account;
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
+import ru.gsench.passwordmanager.domain.interactor.AccountListUseCase;
+import ru.gsench.passwordmanager.domain.interactor.EditAccountUseCase;
+import ru.gsench.passwordmanager.domain.interactor.KeyInputUseCase;
+import ru.gsench.passwordmanager.domain.interactor.NewKeyUseCase;
+import ru.gsench.passwordmanager.domain.interactor.NewPINUseCase;
+import ru.gsench.passwordmanager.domain.interactor.PINInputUseCase;
+import ru.gsench.passwordmanager.domain.interactor.SelectBaseUseCase;
 import ru.gsench.passwordmanager.domain.utils.function;
 import ru.gsench.passwordmanager.presentation.AndroidInterface;
-import ru.gsench.passwordmanager.presentation.presenter.MainPresenter;
-import ru.gsench.passwordmanager.presentation.utils.BaseActivity;
+import ru.gsench.passwordmanager.presentation.presenter.CoordinatorPresenter;
+import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
 import ru.gsench.passwordmanager.presentation.utils.CustomKeyboard;
-import ru.gsench.passwordmanager.presentation.view.MainView;
+import ru.gsench.passwordmanager.presentation.view.CoordinatorView;
+import ru.gsench.passwordmanager.presentation.view.aview.AccountListAView;
 import ru.gsench.passwordmanager.presentation.view.aview.EditAccountAView;
 import ru.gsench.passwordmanager.presentation.view.aview.KeyInputAView;
 import ru.gsench.passwordmanager.presentation.view.aview.NewKeyAView;
 import ru.gsench.passwordmanager.presentation.view.aview.NewPINAView;
 import ru.gsench.passwordmanager.presentation.view.aview.PINInputAView;
 import ru.gsench.passwordmanager.presentation.view.aview.SelectBaseAView;
-import ru.gsench.passwordmanager.presentation.view.view_etc.AccountListAdapter;
 import ru.gsench.passwordmanager.presentation.view.view_etc.PermissionManager;
 import ru.gsench.passwordmanager.presentation.viewholder.MainViewHolder;
 
-public class MainActivity extends BaseActivity implements MainView {
+public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     /**TODO App Preferences
      * - keyboard option
@@ -42,23 +43,25 @@ public class MainActivity extends BaseActivity implements MainView {
 
     public static final String APP_PREFERENCES = "AppPreferences";
 
-    private AccountListAdapter accountListAdapter;
     private MainViewHolder viewHolder;
     private CustomKeyboard keyboard;
     private PermissionManager permissionManager;
+    private AViewContainer container;
+    private AccountListAView accountListView;
 
-    private MainPresenter presenter;
+    private CoordinatorPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main, R.id.dialog_content);
+        setContentView(R.layout.activity_main);
         viewHolder = new MainViewHolder(this);
+        container = new AViewContainer(viewHolder.dialogContent);
         permissionManager = new PermissionManager(this);
         permissionManager.requestBasePermissions(this, new function() {
             @Override
             public void run(String... params) {
-                presenter = new MainPresenter(MainActivity.this, new AndroidInterface(MainActivity.this));
+                presenter = new CoordinatorPresenter(MainActivity.this, new AndroidInterface(MainActivity.this));
                 presenter.start();
             }
         });
@@ -66,7 +69,8 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void init() {
-        setupKeyboard();
+        keyboard = new CustomKeyboard(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
+        keyboard.enableHapticFeedback(true);
     }
 
     @Override
@@ -74,49 +78,22 @@ public class MainActivity extends BaseActivity implements MainView {
         finish();
     }
 
-    private void setupKeyboard(){
-        keyboard = new CustomKeyboard(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
-        keyboard.enableHapticFeedback(true);
+    @Override
+    public void openAccountList(AccountListUseCase interactor) {
+        if(accountListView==null){
+            accountListView = new AccountListAView(new AViewContainer(viewHolder.accountsContent), interactor);
+            accountListView.open();
+        } else accountListView.updateAccounts();
     }
 
     @Override
-    public void viewAccounts(ArrayList<Account> accounts) {
-        if(accountListAdapter==null){
-            accountListAdapter=new AccountListAdapter(this, accounts, new AccountListAdapter.AccountListInterface() {
-                @Override
-                public void onAccountDelete(Account account) {
-                    confirmDeleteDialog(account);
-                }
-
-                @Override
-                public void onAccountEdit(Account account) {
-                    editAccount(account);
-                }
-            });
-            viewHolder.accountList.setAdapter(accountListAdapter);
-        } else {
-            accountListAdapter.notifyDataSetChanged(accounts);
-        }
-        accountListAdapter.closeAllItems();
-    }
-
-    @Override
-    public void keyInputWindow(MainInteractor interactor) {
-        KeyInputAView aView = (KeyInputAView) new KeyInputAView(this, viewHolder.main, interactor).closeOnBackPressed(false);
+    public void keyInputView(KeyInputUseCase interactor) {
+        KeyInputAView aView = (KeyInputAView) new KeyInputAView(container, interactor).closeOnBackPressed(false);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }
 
-    @Override
-    public void unableToParseBase() {
-        Toast.makeText(this, R.string.unable_parse_base, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void unexpectedException() {
-        Toast.makeText(this, R.string.unexpected_error, Toast.LENGTH_SHORT).show();
-    }
-
+    /**
     @Override
     public void unableToEditBaseFile() {
         Toast.makeText(this, R.string.unable_to_edit_file, Toast.LENGTH_SHORT).show();
@@ -125,16 +102,16 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     public void unableToReadBaseFile() {
         Toast.makeText(this, R.string.unable_to_read_file, Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
     @Override
     public void closeCurrentView() {
-        closeView();
+        container.closeView();
     }
 
     @Override
-    public void selectBaseWindow(MainInteractor interactor) {
-        new SelectBaseAView(this, viewHolder.main, interactor)
+    public void selectBaseView(SelectBaseUseCase interactor) {
+        new SelectBaseAView(container, interactor)
                 .closeOnBackPressed(false)
                 .open();
     }
@@ -145,51 +122,24 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Override
-    public void newKeyWindow(MainInteractor interactor) {
-        NewKeyAView aView = (NewKeyAView) new NewKeyAView(this, viewHolder.main, interactor).closeOnBackPressed(false);
+    public void newKeyView(NewKeyUseCase interactor) {
+        NewKeyAView aView = (NewKeyAView) new NewKeyAView(container, interactor).closeOnBackPressed(false);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }
 
     @Override
-    public void openPINWindow(MainInteractor interactor) {
-        new PINInputAView(this, viewHolder.main, interactor)
+    public void openPINInputView(PINInputUseCase interactor) {
+        new PINInputAView(container, interactor)
                 .closeOnBackPressed(false)
                 .open();
     }
 
     @Override
-    public void newPINDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.create_pin_title)
-                .setMessage(R.string.create_pin_msg)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                        presenter.onConfirmPINCreation();
-                    }
-                })
-                .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                })
-                .setCancelable(false)
-                .create()
-                .show();
-    }
-
-    @Override
-    public void newPINWindow(MainInteractor interactor){
-        new NewPINAView(MainActivity.this, viewHolder.main, interactor)
+    public void newPINView(NewPINUseCase interactor){
+        new NewPINAView(container, interactor)
                 .closeOnBackPressed(true)
                 .open();
-    }
-
-    public void onAddClick(View v){
-        presenter.onAddAccountBtn();
     }
 
     @Override
@@ -197,33 +147,9 @@ public class MainActivity extends BaseActivity implements MainView {
         permissionManager.onPermissionCallback(requestCode, permissions, grantResults);
     }
 
-    private void confirmDeleteDialog(final Account accountToDelete){
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.delete_title)
-                .setMessage(getString(R.string.delete_msg, accountToDelete.getName(), accountToDelete.getLogin()))
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        presenter.onDeleteAccountBtn(accountToDelete);
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                })
-                .create()
-                .show();
-    }
-
-    private void editAccount(Account account){
-        presenter.onEditAccountBtn(account);
-    }
-
     @Override
-    public void editAccountWindow(MainInteractor interactor, Account account){
-        EditAccountAView view = (EditAccountAView) new EditAccountAView(this, viewHolder.dialogContent, interactor, account)
+    public void editAccountView(EditAccountUseCase interactor, Account account){
+        EditAccountAView view = (EditAccountAView) new EditAccountAView(container, interactor, account)
                 .closeOnBackPressed(true);
         keyboard.registerEditText(view.aViewHolder.editLogin, true);
         keyboard.registerEditText(view.aViewHolder.editName, true);
@@ -233,6 +159,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     public void onBackPressed() {
+        if(container.onBackHandle()) return;
         if(keyboard.isCustomKeyboardVisible()){
             keyboard.hideCustomKeyboard();
             return;

@@ -5,10 +5,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.domain.interactor.KeyInputUseCase;
 import ru.gsench.passwordmanager.presentation.presenter.KeyInputPresenter;
 import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
 import ru.gsench.passwordmanager.presentation.utils.AView;
-import ru.gsench.passwordmanager.presentation.utils.BaseActivity;
+import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
 import ru.gsench.passwordmanager.presentation.view.KeyInputView;
 import ru.gsench.passwordmanager.presentation.viewholder.KeyInputViewHolder;
 
@@ -21,8 +22,8 @@ public class KeyInputAView extends AView implements KeyInputView {
     public KeyInputViewHolder viewHolder;
     private KeyInputPresenter presenter;
 
-    public KeyInputAView(BaseActivity context, ViewGroup parent, MainInteractor interactor){
-        super(context, parent);
+    public KeyInputAView(AViewContainer container, KeyInputUseCase interactor){
+        super(container);
         viewHolder = new KeyInputViewHolder(context, parent);
         presenter = new KeyInputPresenter(interactor, this);
     }
@@ -56,6 +57,16 @@ public class KeyInputAView extends AView implements KeyInputView {
     @Override
     public void showIncorrectKeyToast() {
         Toast.makeText(context, R.string.incorrect_key, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showUnableToParseBaseToast() {
+        Toast.makeText(context, R.string.unable_parse_base, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showUnexpectedExceptionToast() {
+        Toast.makeText(context, R.string.unexpected_error, Toast.LENGTH_SHORT).show();
     }
 
     @Override

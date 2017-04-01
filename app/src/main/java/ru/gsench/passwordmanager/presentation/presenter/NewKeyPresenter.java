@@ -1,6 +1,6 @@
 package ru.gsench.passwordmanager.presentation.presenter;
 
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
+import ru.gsench.passwordmanager.domain.interactor.NewKeyUseCase;
 import ru.gsench.passwordmanager.presentation.view.NewKeyView;
 
 /**
@@ -9,12 +9,12 @@ import ru.gsench.passwordmanager.presentation.view.NewKeyView;
 
 public class NewKeyPresenter {
 
-    private MainInteractor interactor;
+    private NewKeyUseCase interactor;
     private NewKeyView view;
 
     private String prevKey;
 
-    public NewKeyPresenter(MainInteractor interactor, NewKeyView view) {
+    public NewKeyPresenter(NewKeyUseCase interactor, NewKeyView view) {
         this.interactor=interactor;
         this.view=view;
     }

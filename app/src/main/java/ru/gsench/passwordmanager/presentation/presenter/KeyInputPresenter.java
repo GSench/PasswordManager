@@ -1,8 +1,7 @@
 package ru.gsench.passwordmanager.presentation.presenter;
 
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
+import ru.gsench.passwordmanager.domain.interactor.KeyInputUseCase;
 import ru.gsench.passwordmanager.presentation.view.KeyInputView;
-import ru.gsench.passwordmanager.domain.utils.function;
 
 /**
  * Created by grish on 26.03.2017.
@@ -10,10 +9,10 @@ import ru.gsench.passwordmanager.domain.utils.function;
 
 public class KeyInputPresenter {
 
-    private MainInteractor interactor;
+    private KeyInputUseCase interactor;
     private KeyInputView view;
 
-    public KeyInputPresenter(MainInteractor interactor, KeyInputView view){
+    public KeyInputPresenter(KeyInputUseCase interactor, KeyInputView view){
         this.interactor=interactor;
         this.view=view;
     }
@@ -23,19 +22,22 @@ public class KeyInputPresenter {
     }
 
     public void onEnter(){
-        interactor.onKeyInput(view.getKeyInput(),
-                new function() {
-                    @Override
-                    public void run(String... params) {
-                        view.closeView();
-                    }
-                }, //Correct
-                new function() {
-                    @Override
-                    public void run(String... params) {
-                        view.showIncorrectKeyToast();
-                    }
-                });  //Incorrect
+        interactor.onKeyInput(view.getKeyInput(), this);
+    }
+
+    public void onIncorrectKeyInput(){
+        view.showIncorrectKeyToast();
+    }
+
+    public void unableToParseBase(){
+        view.showUnableToParseBaseToast();
+    }
+
+    public void unexpectedException(){
+        view.showUnexpectedExceptionToast();
+    }
+
+    public void onCorrectKeyInput(){
     }
 
 }

@@ -1,5 +1,6 @@
 package ru.gsench.passwordmanager.presentation.utils;
 
+import android.content.Context;
 import android.view.ViewGroup;
 
 /**
@@ -8,8 +9,9 @@ import android.view.ViewGroup;
 
 public abstract class AView {
 
-    protected BaseActivity context;
+    protected AViewContainer container;
     protected ViewGroup parent;
+    public Context context;
 
     public boolean isCloseOnBackPressed() {
         return closeOnBackPressed;
@@ -17,17 +19,18 @@ public abstract class AView {
 
     private boolean closeOnBackPressed = true;
 
-    public AView(BaseActivity context, ViewGroup parent){
-        this.context=context;
-        this.parent=parent;
+    public AView(AViewContainer context){
+        this.container =context;
+        this.parent=context.getContainerView();
+        this.context=parent.getContext();
     }
 
     public void open(){
-        context.openView(this);
+        container.openView(this);
     }
 
     public void closeSelf(){
-        context.closeView();
+        container.closeView();
     }
 
     public AView closeOnBackPressed(boolean closeOnBackPressed){

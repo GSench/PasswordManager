@@ -2,10 +2,7 @@ package ru.gsench.passwordmanager.presentation.viewholder;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-
-import com.github.clans.fab.FloatingActionButton;
 
 import ru.gsench.passwordmanager.R;
 
@@ -17,13 +14,11 @@ public class MainViewHolder {
 
     public ViewGroup main;
     public RelativeLayout dialogContent;
-    public ListView accountList;
-    public FloatingActionButton fab;
+    public ViewGroup accountsContent;
 
     public MainViewHolder(AppCompatActivity act){
         main = (ViewGroup) act.findViewById(R.id.activity_main);
         dialogContent = (RelativeLayout) act.findViewById(R.id.dialog_content);
-        accountList = (ListView) act.findViewById(R.id.account_list);
-        fab = (FloatingActionButton) act.findViewById(R.id.fab);
+        accountsContent = (RelativeLayout) act.findViewById(R.id.account_list_content);
     }
 }

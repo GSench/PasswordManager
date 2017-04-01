@@ -5,9 +5,10 @@ import android.view.ViewGroup;
 
 import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
 import ru.gsench.passwordmanager.R;
+import ru.gsench.passwordmanager.domain.interactor.NewKeyUseCase;
 import ru.gsench.passwordmanager.presentation.presenter.NewKeyPresenter;
 import ru.gsench.passwordmanager.presentation.utils.AView;
-import ru.gsench.passwordmanager.presentation.utils.BaseActivity;
+import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
 import ru.gsench.passwordmanager.presentation.view.NewKeyView;
 import ru.gsench.passwordmanager.presentation.viewholder.KeyInputViewHolder;
 
@@ -20,8 +21,8 @@ public class NewKeyAView extends AView implements NewKeyView {
     public KeyInputViewHolder viewHolder;
     private NewKeyPresenter presenter;
 
-    public NewKeyAView(BaseActivity context, ViewGroup parent, MainInteractor interactor){
-        super(context, parent);
+    public NewKeyAView(AViewContainer container, NewKeyUseCase interactor){
+        super(container);
         viewHolder = new KeyInputViewHolder(context, parent);
         presenter = new NewKeyPresenter(interactor, this);
     }

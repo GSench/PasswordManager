@@ -1,7 +1,7 @@
 package ru.gsench.passwordmanager.presentation.presenter;
 
 import ru.gsench.passwordmanager.domain.account_system.Account;
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
+import ru.gsench.passwordmanager.domain.interactor.EditAccountUseCase;
 import ru.gsench.passwordmanager.presentation.utils.RandomPassword;
 import ru.gsench.passwordmanager.presentation.view.EditAccountView;
 
@@ -14,12 +14,12 @@ public class EditAccountPresenter {
     private static final String FULLY_RANDOM = "fully_random";
     private static final String WITHOUT_SYM = "without_sym";
 
-    private MainInteractor interactor;
+    private EditAccountUseCase interactor;
     private EditAccountView view;
 
     private Account account;
 
-    public EditAccountPresenter(MainInteractor interactor, EditAccountView view, Account account){
+    public EditAccountPresenter(EditAccountUseCase interactor, EditAccountView view, Account account){
         this.interactor=interactor;
         this.view=view;
         this.account=account;
@@ -27,11 +27,9 @@ public class EditAccountPresenter {
 
     public void start(){
         view.init();
-        if(account!=null){
-            view.setName(account.getName());
-            view.setLogin(account.getLogin());
-            view.setPassword(account.getPassword());
-        }
+        view.setName(account.getName());
+        view.setLogin(account.getLogin());
+        view.setPassword(account.getPassword());
     }
 
     public void onRandomPWBtn(){
@@ -63,11 +61,13 @@ public class EditAccountPresenter {
     }
 
     private boolean fullyRandomPref(){
-        return interactor.system.getSavedBoolean(FULLY_RANDOM, false);
+        //return interactor.system.getSavedBoolean(FULLY_RANDOM, false);
+        return false;
     }
 
     private boolean withoutSymPref(){
-        return interactor.system.getSavedBoolean(WITHOUT_SYM, false);
+        //return interactor.system.getSavedBoolean(WITHOUT_SYM, false);
+        return false;
     }
 
     public void onOKBtn() {
@@ -87,7 +87,7 @@ public class EditAccountPresenter {
         if(!correct) return;
         view.closeView();
         interactor.editAccount(new Account(
-                account!=null ? account.getId() : interactor.getAccountsCount(),
+                account.getId(),
                 view.getName(),
                 view.getLogin(),
                 view.getPassword()

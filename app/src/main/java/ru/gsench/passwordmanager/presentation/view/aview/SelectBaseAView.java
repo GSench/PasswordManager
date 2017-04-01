@@ -2,6 +2,7 @@ package ru.gsench.passwordmanager.presentation.view.aview;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
@@ -12,9 +13,10 @@ import java.io.File;
 
 import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
+import ru.gsench.passwordmanager.domain.interactor.SelectBaseUseCase;
 import ru.gsench.passwordmanager.presentation.presenter.SelectBasePresenter;
 import ru.gsench.passwordmanager.presentation.utils.AView;
-import ru.gsench.passwordmanager.presentation.utils.BaseActivity;
+import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
 import ru.gsench.passwordmanager.presentation.view.SelectBaseView;
 import ru.gsench.passwordmanager.presentation.viewholder.SelectBaseViewHolder;
 import ru.gsench.passwordmanager.domain.utils.function;
@@ -28,8 +30,8 @@ public class SelectBaseAView extends AView implements SelectBaseView {
     private SelectBaseViewHolder viewHolder;
     private SelectBasePresenter presenter;
 
-    public SelectBaseAView(BaseActivity context, ViewGroup parent, MainInteractor interactor){
-        super(context, parent);
+    public SelectBaseAView(AViewContainer container, SelectBaseUseCase interactor){
+        super(container);
         viewHolder = new SelectBaseViewHolder(context, parent);
         presenter = new SelectBasePresenter(interactor, this);
     }
@@ -84,6 +86,11 @@ public class SelectBaseAView extends AView implements SelectBaseView {
     @Override
     public void closeView() {
         closeSelf();
+    }
+
+    @Override
+    public void showUnableToEditBaseFileToast() {
+        Toast.makeText(context, R.string.unable_to_read_file, Toast.LENGTH_SHORT).show();
     }
 
     private void requestFile(int selection_type, String title, final function doAfter){

@@ -10,5 +10,7 @@ public interface KeyInputView {
     public void closeView();
     public String getKeyInput();
     public void showIncorrectKeyToast();
+    public void showUnableToParseBaseToast();
+    public void showUnexpectedExceptionToast();
 
 }

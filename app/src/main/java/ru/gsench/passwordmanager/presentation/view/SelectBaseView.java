@@ -10,5 +10,6 @@ public interface SelectBaseView {
     public void openRequestFileDialog();
     public void openRequestDirDialog();
     public void closeView();
+    public void showUnableToEditBaseFileToast();
 
 }

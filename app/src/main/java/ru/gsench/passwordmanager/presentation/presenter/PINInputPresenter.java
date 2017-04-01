@@ -1,8 +1,8 @@
 package ru.gsench.passwordmanager.presentation.presenter;
 
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
-import ru.gsench.passwordmanager.presentation.view.PINInputView;
+import ru.gsench.passwordmanager.domain.interactor.PINInputUseCase;
 import ru.gsench.passwordmanager.domain.utils.function;
+import ru.gsench.passwordmanager.presentation.view.PINInputView;
 
 /**
  * Created by Григорий Сенченок on 29.03.2017.
@@ -10,10 +10,10 @@ import ru.gsench.passwordmanager.domain.utils.function;
 
 public class PINInputPresenter {
 
-    private MainInteractor interactor;
+    private PINInputUseCase interactor;
     private PINInputView view;
 
-    public PINInputPresenter(MainInteractor interactor, PINInputView view){
+    public PINInputPresenter(PINInputUseCase interactor, PINInputView view){
         this.interactor=interactor;
         this.view=view;
     }
@@ -26,12 +26,12 @@ public class PINInputPresenter {
 
     public void onPINInput(String pin){
         view.resetPINInput();
-        try {
-            interactor.onPINInput(pin);
-        } catch (MainInteractor.BlockPINException e) {
-        }
         long block = interactor.isPINBlocked();
-        if (block > 0) blockPINFor(block);
+        if (block > 0){
+            blockPINFor(block);
+            return;
+        }
+        interactor.onPINInput(pin);
     }
 
     public void onResetBtn(){
@@ -39,11 +39,11 @@ public class PINInputPresenter {
     }
 
     public void onResetConfirmBtn(){
-        interactor.onResetPINBtn();
+        interactor.onResetPIN();
     }
 
     private void blockPINFor(final long time){
-        interactor.system.countDown(time, 1000,
+        interactor.countDownTime(time, 1000,
                 new function() {
                     @Override
                     public void run(String... params) {

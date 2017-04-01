@@ -5,11 +5,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ru.gsench.passwordmanager.domain.account_system.Account;
+import ru.gsench.passwordmanager.domain.interactor.EditAccountUseCase;
 import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
 import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.presentation.presenter.EditAccountPresenter;
 import ru.gsench.passwordmanager.presentation.utils.AView;
-import ru.gsench.passwordmanager.presentation.utils.BaseActivity;
+import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
 import ru.gsench.passwordmanager.presentation.utils.MyTextWatcher;
 import ru.gsench.passwordmanager.presentation.view.EditAccountView;
 import ru.gsench.passwordmanager.presentation.viewholder.EditAccountViewHolder;
@@ -25,8 +26,8 @@ public class EditAccountAView extends AView implements EditAccountView {
     public EditAccountViewHolder aViewHolder;
     private EditAccountPresenter presenter;
 
-    public EditAccountAView(BaseActivity context, ViewGroup parent, MainInteractor interactor, Account account){
-        super(context, parent);
+    public EditAccountAView(AViewContainer container, EditAccountUseCase interactor, Account account){
+        super(container);
         aViewHolder = new EditAccountViewHolder(context, parent);
         presenter = new EditAccountPresenter(interactor, this, account);
     }
