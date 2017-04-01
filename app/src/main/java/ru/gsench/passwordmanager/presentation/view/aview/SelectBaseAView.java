@@ -12,14 +12,12 @@ import com.github.angads25.filepicker.view.FilePickerDialog;
 import java.io.File;
 
 import ru.gsench.passwordmanager.R;
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
-import ru.gsench.passwordmanager.domain.interactor.SelectBaseUseCase;
+import ru.gsench.passwordmanager.domain.utils.function;
 import ru.gsench.passwordmanager.presentation.presenter.SelectBasePresenter;
 import ru.gsench.passwordmanager.presentation.utils.AView;
 import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
 import ru.gsench.passwordmanager.presentation.view.SelectBaseView;
 import ru.gsench.passwordmanager.presentation.viewholder.SelectBaseViewHolder;
-import ru.gsench.passwordmanager.domain.utils.function;
 
 /**
  * Created by grish on 11.03.2017.
@@ -30,10 +28,11 @@ public class SelectBaseAView extends AView implements SelectBaseView {
     private SelectBaseViewHolder viewHolder;
     private SelectBasePresenter presenter;
 
-    public SelectBaseAView(AViewContainer container, SelectBaseUseCase interactor){
+    public SelectBaseAView(AViewContainer container, SelectBasePresenter presenter){
         super(container);
         viewHolder = new SelectBaseViewHolder(context, parent);
-        presenter = new SelectBasePresenter(interactor, this);
+        this.presenter=presenter;
+        presenter.setView(this);
     }
 
     @Override

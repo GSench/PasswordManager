@@ -10,11 +10,15 @@ import ru.gsench.passwordmanager.presentation.view.KeyInputView;
 public class KeyInputPresenter {
 
     private KeyInputUseCase interactor;
+
+    public void setView(KeyInputView view) {
+        this.view = view;
+    }
+
     private KeyInputView view;
 
-    public KeyInputPresenter(KeyInputUseCase interactor, KeyInputView view){
+    public KeyInputPresenter(KeyInputUseCase interactor){
         this.interactor=interactor;
-        this.view=view;
     }
 
     public void start(){

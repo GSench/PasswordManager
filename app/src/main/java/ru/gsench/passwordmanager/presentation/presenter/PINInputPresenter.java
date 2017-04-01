@@ -11,11 +11,15 @@ import ru.gsench.passwordmanager.presentation.view.PINInputView;
 public class PINInputPresenter {
 
     private PINInputUseCase interactor;
+
+    public void setView(PINInputView view) {
+        this.view = view;
+    }
+
     private PINInputView view;
 
-    public PINInputPresenter(PINInputUseCase interactor, PINInputView view){
+    public PINInputPresenter(PINInputUseCase interactor){
         this.interactor=interactor;
-        this.view=view;
     }
 
     public void start(){

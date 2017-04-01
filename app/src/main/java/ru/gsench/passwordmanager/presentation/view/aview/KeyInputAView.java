@@ -5,9 +5,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import ru.gsench.passwordmanager.R;
-import ru.gsench.passwordmanager.domain.interactor.KeyInputUseCase;
 import ru.gsench.passwordmanager.presentation.presenter.KeyInputPresenter;
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
 import ru.gsench.passwordmanager.presentation.utils.AView;
 import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
 import ru.gsench.passwordmanager.presentation.view.KeyInputView;
@@ -22,10 +20,11 @@ public class KeyInputAView extends AView implements KeyInputView {
     public KeyInputViewHolder viewHolder;
     private KeyInputPresenter presenter;
 
-    public KeyInputAView(AViewContainer container, KeyInputUseCase interactor){
+    public KeyInputAView(AViewContainer container, KeyInputPresenter presenter){
         super(container);
         viewHolder = new KeyInputViewHolder(context, parent);
-        presenter = new KeyInputPresenter(interactor, this);
+        this.presenter=presenter;
+        presenter.setView(this);
     }
 
     @Override

@@ -11,11 +11,15 @@ import ru.gsench.passwordmanager.presentation.view.AccountListView;
 public class AccountListPresenter {
 
     private AccountListUseCase interactor;
+
+    public void setView(AccountListView view) {
+        this.view = view;
+    }
+
     private AccountListView view;
 
-    public AccountListPresenter(AccountListView view, AccountListUseCase interactor){
+    public AccountListPresenter(AccountListUseCase interactor){
         this.interactor=interactor;
-        this.view=view;
     }
 
     public void start(){

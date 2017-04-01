@@ -10,13 +10,17 @@ import ru.gsench.passwordmanager.presentation.view.NewKeyView;
 public class NewKeyPresenter {
 
     private NewKeyUseCase interactor;
+
+    public void setView(NewKeyView view) {
+        this.view = view;
+    }
+
     private NewKeyView view;
 
     private String prevKey;
 
-    public NewKeyPresenter(NewKeyUseCase interactor, NewKeyView view) {
+    public NewKeyPresenter(NewKeyUseCase interactor) {
         this.interactor=interactor;
-        this.view=view;
     }
 
     public void onStart() {

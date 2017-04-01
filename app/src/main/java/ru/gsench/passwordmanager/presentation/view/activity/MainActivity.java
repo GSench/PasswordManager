@@ -6,17 +6,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import ru.gsench.passwordmanager.R;
-import ru.gsench.passwordmanager.domain.account_system.Account;
-import ru.gsench.passwordmanager.domain.interactor.AccountListUseCase;
-import ru.gsench.passwordmanager.domain.interactor.EditAccountUseCase;
-import ru.gsench.passwordmanager.domain.interactor.KeyInputUseCase;
-import ru.gsench.passwordmanager.domain.interactor.NewKeyUseCase;
-import ru.gsench.passwordmanager.domain.interactor.NewPINUseCase;
-import ru.gsench.passwordmanager.domain.interactor.PINInputUseCase;
-import ru.gsench.passwordmanager.domain.interactor.SelectBaseUseCase;
 import ru.gsench.passwordmanager.domain.utils.function;
 import ru.gsench.passwordmanager.presentation.AndroidInterface;
+import ru.gsench.passwordmanager.presentation.presenter.AccountListPresenter;
 import ru.gsench.passwordmanager.presentation.presenter.CoordinatorPresenter;
+import ru.gsench.passwordmanager.presentation.presenter.EditAccountPresenter;
+import ru.gsench.passwordmanager.presentation.presenter.KeyInputPresenter;
+import ru.gsench.passwordmanager.presentation.presenter.NewKeyPresenter;
+import ru.gsench.passwordmanager.presentation.presenter.NewPINPresenter;
+import ru.gsench.passwordmanager.presentation.presenter.PINInputPresenter;
+import ru.gsench.passwordmanager.presentation.presenter.SelectBasePresenter;
 import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
 import ru.gsench.passwordmanager.presentation.utils.CustomKeyboard;
 import ru.gsench.passwordmanager.presentation.view.CoordinatorView;
@@ -61,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
         permissionManager.requestBasePermissions(this, new function() {
             @Override
             public void run(String... params) {
-                presenter = new CoordinatorPresenter(MainActivity.this, new AndroidInterface(MainActivity.this));
+                presenter = new CoordinatorPresenter(new AndroidInterface(MainActivity.this));
+                presenter.setView(MainActivity.this);
                 presenter.start();
             }
         });
@@ -79,16 +79,16 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
     }
 
     @Override
-    public void openAccountList(AccountListUseCase interactor) {
+    public void openAccountList(AccountListPresenter presenter) {
         if(accountListView==null){
-            accountListView = new AccountListAView(new AViewContainer(viewHolder.accountsContent), interactor);
+            accountListView = new AccountListAView(new AViewContainer(viewHolder.accountsContent), presenter);
             accountListView.open();
         } else accountListView.updateAccounts();
     }
 
     @Override
-    public void keyInputView(KeyInputUseCase interactor) {
-        KeyInputAView aView = (KeyInputAView) new KeyInputAView(container, interactor).closeOnBackPressed(false);
+    public void keyInputView(KeyInputPresenter presenter) {
+        KeyInputAView aView = (KeyInputAView) new KeyInputAView(container, presenter).closeOnBackPressed(false);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }
@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
     }
 
     @Override
-    public void selectBaseView(SelectBaseUseCase interactor) {
-        new SelectBaseAView(container, interactor)
+    public void selectBaseView(SelectBasePresenter presenter) {
+        new SelectBaseAView(container, presenter)
                 .closeOnBackPressed(false)
                 .open();
     }
@@ -122,22 +122,22 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
     }
 
     @Override
-    public void newKeyView(NewKeyUseCase interactor) {
-        NewKeyAView aView = (NewKeyAView) new NewKeyAView(container, interactor).closeOnBackPressed(false);
+    public void newKeyView(NewKeyPresenter presenter) {
+        NewKeyAView aView = (NewKeyAView) new NewKeyAView(container, presenter).closeOnBackPressed(false);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }
 
     @Override
-    public void openPINInputView(PINInputUseCase interactor) {
-        new PINInputAView(container, interactor)
+    public void openPINInputView(PINInputPresenter presenter) {
+        new PINInputAView(container, presenter)
                 .closeOnBackPressed(false)
                 .open();
     }
 
     @Override
-    public void newPINView(NewPINUseCase interactor){
-        new NewPINAView(container, interactor)
+    public void newPINView(NewPINPresenter presenter){
+        new NewPINAView(container, presenter)
                 .closeOnBackPressed(true)
                 .open();
     }
@@ -148,9 +148,8 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
     }
 
     @Override
-    public void editAccountView(EditAccountUseCase interactor, Account account){
-        EditAccountAView view = (EditAccountAView) new EditAccountAView(container, interactor, account)
-                .closeOnBackPressed(true);
+    public void editAccountView(EditAccountPresenter presenter){
+        EditAccountAView view = (EditAccountAView) new EditAccountAView(container, presenter).closeOnBackPressed(true);
         keyboard.registerEditText(view.aViewHolder.editLogin, true);
         keyboard.registerEditText(view.aViewHolder.editName, true);
         keyboard.registerEditText(view.aViewHolder.editPassword, true);

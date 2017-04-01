@@ -10,13 +10,17 @@ import ru.gsench.passwordmanager.presentation.view.NewPINView;
 public class NewPINPresenter {
 
     private NewPINUseCase interactor;
+
+    public void setView(NewPINView view) {
+        this.view = view;
+    }
+
     private NewPINView view;
 
     private String prevPIN = null;
 
-    public NewPINPresenter(NewPINUseCase interactor, NewPINView view){
+    public NewPINPresenter(NewPINUseCase interactor){
         this.interactor=interactor;
-        this.view=view;
     }
 
     public void start(){

@@ -8,9 +8,7 @@ import android.view.ViewGroup;
 
 import com.andrognito.pinlockview.PinLockListener;
 
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
 import ru.gsench.passwordmanager.R;
-import ru.gsench.passwordmanager.domain.interactor.NewPINUseCase;
 import ru.gsench.passwordmanager.presentation.presenter.NewPINPresenter;
 import ru.gsench.passwordmanager.presentation.utils.AView;
 import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
@@ -26,10 +24,11 @@ public class NewPINAView extends AView implements NewPINView {
     public PINInputViewHolder viewHolder;
     private NewPINPresenter presenter;
 
-    public NewPINAView(AViewContainer container, NewPINUseCase interactor) {
+    public NewPINAView(AViewContainer container, NewPINPresenter presenter) {
         super(container);
         viewHolder = new PINInputViewHolder(context, parent);
-        presenter= new NewPINPresenter(interactor, this);
+        this.presenter=presenter;
+        presenter.setView(this);
     }
 
     @Override

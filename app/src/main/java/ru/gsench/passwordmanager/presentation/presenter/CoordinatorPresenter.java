@@ -12,11 +12,15 @@ import ru.gsench.passwordmanager.presentation.view.CoordinatorView;
 public class CoordinatorPresenter {
 
     private MainInteractor interactor;
+
+    public void setView(CoordinatorView view) {
+        this.view = view;
+    }
+
     private CoordinatorView view;
 
-    public CoordinatorPresenter(CoordinatorView view, SystemInterface systemInterface){
+    public CoordinatorPresenter(SystemInterface systemInterface){
         interactor=new MainInteractor(this, systemInterface);
-        this.view=view;
     }
 
     public void start(){
@@ -25,7 +29,7 @@ public class CoordinatorPresenter {
     }
 
     public void selectBaseView() {
-        view.selectBaseView(interactor);
+        view.selectBaseView(new SelectBasePresenter(interactor));
     }
 
     public void closeCurrentView() {
@@ -33,27 +37,27 @@ public class CoordinatorPresenter {
     }
 
     public void keyInputView() {
-        view.keyInputView(interactor);
+        view.keyInputView(new KeyInputPresenter(interactor));
     }
 
     public void newKeyView() {
-        view.newKeyView(interactor);
+        view.newKeyView(new NewKeyPresenter(interactor));
     }
 
     public void newPINView(){
-        view.newPINView(interactor);
+        view.newPINView(new NewPINPresenter(interactor));
     }
 
     public void openPINView() {
-        view.openPINInputView(interactor);
+        view.openPINInputView(new PINInputPresenter(interactor));
     }
 
     public void openAccountList(){
-        view.openAccountList(interactor);
+        view.openAccountList(new AccountListPresenter(interactor));
     }
 
     public void editAccountView(Account account){
-        view.editAccountView(interactor, account);
+        view.editAccountView(new EditAccountPresenter(interactor, account));
     }
 
     public void onBackPressed() {

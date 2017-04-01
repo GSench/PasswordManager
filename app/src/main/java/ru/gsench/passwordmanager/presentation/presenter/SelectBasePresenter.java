@@ -17,11 +17,15 @@ public class SelectBasePresenter {
     private final String defaultBaseFilePath = new File(Environment.getExternalStorageDirectory(), "Password Manager/"+defaultBaseFileName).getAbsolutePath();
 
     private SelectBaseUseCase interactor;
+
+    public void setView(SelectBaseView view) {
+        this.view = view;
+    }
+
     private SelectBaseView view;
 
-    public SelectBasePresenter(SelectBaseUseCase interactor, SelectBaseView view){
+    public SelectBasePresenter(SelectBaseUseCase interactor){
         this.interactor=interactor;
-        this.view=view;
     }
 
     public void start(){

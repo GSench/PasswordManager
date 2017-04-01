@@ -4,9 +4,6 @@ import android.text.Editable;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ru.gsench.passwordmanager.domain.account_system.Account;
-import ru.gsench.passwordmanager.domain.interactor.EditAccountUseCase;
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
 import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.presentation.presenter.EditAccountPresenter;
 import ru.gsench.passwordmanager.presentation.utils.AView;
@@ -26,10 +23,11 @@ public class EditAccountAView extends AView implements EditAccountView {
     public EditAccountViewHolder aViewHolder;
     private EditAccountPresenter presenter;
 
-    public EditAccountAView(AViewContainer container, EditAccountUseCase interactor, Account account){
+    public EditAccountAView(AViewContainer container, EditAccountPresenter presenter){
         super(container);
         aViewHolder = new EditAccountViewHolder(context, parent);
-        presenter = new EditAccountPresenter(interactor, this, account);
+        this.presenter=presenter;
+        presenter.setView(this);
     }
 
     @Override

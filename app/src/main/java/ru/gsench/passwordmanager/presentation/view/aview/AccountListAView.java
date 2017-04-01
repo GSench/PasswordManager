@@ -9,8 +9,6 @@ import java.util.ArrayList;
 
 import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.domain.account_system.Account;
-import ru.gsench.passwordmanager.domain.interactor.AccountListUseCase;
-import ru.gsench.passwordmanager.domain.interactor.MainInteractor;
 import ru.gsench.passwordmanager.presentation.presenter.AccountListPresenter;
 import ru.gsench.passwordmanager.presentation.utils.AView;
 import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
@@ -28,10 +26,11 @@ public class AccountListAView extends AView implements AccountListView {
     private AccountListPresenter presenter;
     private AccountListAdapter accountListAdapter;
 
-    public AccountListAView(AViewContainer container, AccountListUseCase interactor) {
+    public AccountListAView(AViewContainer container, AccountListPresenter presenter) {
         super(container);
         viewHolder = new AccountListViewHolder(context, parent);
-        presenter = new AccountListPresenter(this, interactor);
+        this.presenter=presenter;
+        presenter.setView(this);
     }
 
     @Override

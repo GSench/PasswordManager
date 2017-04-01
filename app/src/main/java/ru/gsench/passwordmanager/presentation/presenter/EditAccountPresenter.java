@@ -15,13 +15,17 @@ public class EditAccountPresenter {
     private static final String WITHOUT_SYM = "without_sym";
 
     private EditAccountUseCase interactor;
+
+    public void setView(EditAccountView view) {
+        this.view = view;
+    }
+
     private EditAccountView view;
 
     private Account account;
 
-    public EditAccountPresenter(EditAccountUseCase interactor, EditAccountView view, Account account){
+    public EditAccountPresenter(EditAccountUseCase interactor, Account account){
         this.interactor=interactor;
-        this.view=view;
         this.account=account;
     }
 
