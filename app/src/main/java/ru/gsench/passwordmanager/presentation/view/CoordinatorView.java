@@ -19,6 +19,8 @@ public interface CoordinatorView {
     public void openAccountList(AccountListPresenter presenter);
     public void keyInputView(KeyInputPresenter presenter);
     public void selectBaseView(SelectBasePresenter presenter);
+    public void unableToReadBaseFile();
+    public void unableToEditBaseFile();
     public void newKeyView(NewKeyPresenter presenter);
     public void openPINInputView(PINInputPresenter presenter);
     public void editAccountView(EditAccountPresenter presenter);

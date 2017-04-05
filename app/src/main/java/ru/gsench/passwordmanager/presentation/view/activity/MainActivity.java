@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.domain.utils.function;
@@ -93,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
         aView.open();
     }
 
-    /**
     @Override
     public void unableToEditBaseFile() {
         Toast.makeText(this, R.string.unable_to_edit_file, Toast.LENGTH_SHORT).show();
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
     @Override
     public void unableToReadBaseFile() {
         Toast.makeText(this, R.string.unable_to_read_file, Toast.LENGTH_SHORT).show();
-    }*/
+    }
 
     @Override
     public void closeCurrentView() {

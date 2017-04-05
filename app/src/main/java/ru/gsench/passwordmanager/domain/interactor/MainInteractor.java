@@ -123,7 +123,7 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
     private void afterCorrectKeyInput(){
         coordinator.closeCurrentView();
         coordinator.openAccountList();
-        if(newKeyInput) saveAccountBase(null);
+        if(newKeyInput) saveAccountBase();
         if(newBaseSelected) coordinator.newPINView();
     }
 
@@ -212,7 +212,7 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
         try {
             base = system.readFileFromPath(path);
         } catch (IOException e) {
-            //coordinator.unableToReadBaseFile();
+            coordinator.unableToReadBaseFile();
             resetBase();
             return;
         }
@@ -246,19 +246,19 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
     @Override
     public void editAccount(Account account){
         accountSystem.editAccount(account);
-        saveAccountBase(null);
+        saveAccountBase();
         coordinator.openAccountList();
     }
 
     @Override
     public void removeAccount(Account account){
         accountSystem.deleteAccount(account);
-        saveAccountBase(null);
+        saveAccountBase();
         coordinator.openAccountList();
     }
 
     private final static Object synchronizationStub = new Object();
-    private void saveAccountBase(final function onException){
+    private void saveAccountBase(){
         system.doOnBackground(new function() {
             @Override
             public void run(String... params) {
@@ -269,14 +269,14 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
                         system.doOnForeground(new function() {
                             @Override
                             public void run(String... params) {
-                                //coordinator.unexpectedException();
+                                coordinator.unableToEditBaseFile();
                             }
                         });
                     } catch (IOException e) {
                         system.doOnForeground(new function() {
                             @Override
                             public void run(String... params) {
-                                //coordinator.unableToEditBaseFile();
+                                coordinator.unableToEditBaseFile();
                                 resetBase();
                             }
                         });

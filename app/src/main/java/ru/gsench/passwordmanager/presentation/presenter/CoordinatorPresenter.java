@@ -35,6 +35,14 @@ public class CoordinatorPresenter {
         closeOnBackPressed=false;
     }
 
+    public void unableToReadBaseFile(){
+        view.unableToReadBaseFile();
+    }
+
+    public void unableToEditBaseFile(){
+        view.unableToEditBaseFile();
+    }
+
     public void closeCurrentView() {
         view.closeCurrentView();
     }
