@@ -13,6 +13,8 @@ public class CoordinatorPresenter {
 
     private MainInteractor interactor;
 
+    private boolean closeOnBackPressed = true;
+
     public void setView(CoordinatorView view) {
         this.view = view;
     }
@@ -30,6 +32,7 @@ public class CoordinatorPresenter {
 
     public void selectBaseView() {
         view.selectBaseView(new SelectBasePresenter(interactor));
+        closeOnBackPressed=false;
     }
 
     public void closeCurrentView() {
@@ -38,18 +41,22 @@ public class CoordinatorPresenter {
 
     public void keyInputView() {
         view.keyInputView(new KeyInputPresenter(interactor));
+        closeOnBackPressed=false;
     }
 
     public void newKeyView() {
         view.newKeyView(new NewKeyPresenter(interactor));
+        closeOnBackPressed=false;
     }
 
     public void newPINView(){
         view.newPINView(new NewPINPresenter(interactor));
+        closeOnBackPressed=true;
     }
 
     public void openPINView() {
         view.openPINInputView(new PINInputPresenter(interactor));
+        closeOnBackPressed=false;
     }
 
     public void openAccountList(){
@@ -58,10 +65,11 @@ public class CoordinatorPresenter {
 
     public void editAccountView(Account account){
         view.editAccountView(new EditAccountPresenter(interactor, account));
+        closeOnBackPressed=true;
     }
 
     public void onBackPressed() {
-        if(view.isViewOpened()) view.closeCurrentView();
+        if(view.isViewOpened() && closeOnBackPressed) view.closeCurrentView();
         else view.exit();
     }
 }

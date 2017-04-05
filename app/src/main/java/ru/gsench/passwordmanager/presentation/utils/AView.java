@@ -13,12 +13,6 @@ public abstract class AView {
     protected ViewGroup parent;
     public Context context;
 
-    public boolean isCloseOnBackPressed() {
-        return closeOnBackPressed;
-    }
-
-    private boolean closeOnBackPressed = true;
-
     public AView(AViewContainer context){
         this.container =context;
         this.parent=context.getContainerView();
@@ -31,11 +25,6 @@ public abstract class AView {
 
     public void closeSelf(){
         container.closeView();
-    }
-
-    public AView closeOnBackPressed(boolean closeOnBackPressed){
-        this.closeOnBackPressed=closeOnBackPressed;
-        return this;
     }
 
     protected abstract ViewGroup getView();

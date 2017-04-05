@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     @Override
     public void keyInputView(KeyInputPresenter presenter) {
-        KeyInputAView aView = (KeyInputAView) new KeyInputAView(container, presenter).closeOnBackPressed(false);
+        KeyInputAView aView = new KeyInputAView(container, presenter);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }
@@ -111,9 +111,7 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     @Override
     public void selectBaseView(SelectBasePresenter presenter) {
-        new SelectBaseAView(container, presenter)
-                .closeOnBackPressed(false)
-                .open();
+        new SelectBaseAView(container, presenter).open();
     }
 
     @Override
@@ -123,23 +121,19 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     @Override
     public void newKeyView(NewKeyPresenter presenter) {
-        NewKeyAView aView = (NewKeyAView) new NewKeyAView(container, presenter).closeOnBackPressed(false);
+        NewKeyAView aView = new NewKeyAView(container, presenter);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }
 
     @Override
     public void openPINInputView(PINInputPresenter presenter) {
-        new PINInputAView(container, presenter)
-                .closeOnBackPressed(false)
-                .open();
+        new PINInputAView(container, presenter).open();
     }
 
     @Override
     public void newPINView(NewPINPresenter presenter){
-        new NewPINAView(container, presenter)
-                .closeOnBackPressed(true)
-                .open();
+        new NewPINAView(container, presenter).open();
     }
 
     @Override
@@ -154,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     @Override
     public void editAccountView(EditAccountPresenter presenter){
-        EditAccountAView view = (EditAccountAView) new EditAccountAView(container, presenter).closeOnBackPressed(true);
+        EditAccountAView view = new EditAccountAView(container, presenter);
         keyboard.registerEditText(view.aViewHolder.editLogin, true);
         keyboard.registerEditText(view.aViewHolder.editName, true);
         keyboard.registerEditText(view.aViewHolder.editPassword, true);
