@@ -158,10 +158,7 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     @Override
     public void onBackPressed() {
-        if(keyboard.isCustomKeyboardVisible()){
-            keyboard.hideCustomKeyboard();
-            return;
-        }
+        if(keyboard.onBackHandle()) return;
         if(container.onBackHandle()) return;
         presenter.onBackPressed();
     }

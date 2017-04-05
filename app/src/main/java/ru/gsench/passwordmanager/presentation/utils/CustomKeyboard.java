@@ -46,6 +46,7 @@ import android.widget.Toast;
 import ru.gsench.passwordmanager.R;
 
 import static android.content.ClipDescription.MIMETYPE_TEXT_PLAIN;
+import static ru.gsench.passwordmanager.R.xml.keyboard;
 
 /**
  * When an activity hosts a keyboardView, this class allows several EditText's to register for it.
@@ -139,7 +140,7 @@ public class CustomKeyboard {
     public CustomKeyboard(Activity host, KeyboardView keyboardView, boolean keyPreview) {
         mHostActivity = host;
         mKeyboardView = keyboardView;
-        mKeyboard = new Keyboard(mHostActivity, R.xml.keyboard);
+        mKeyboard = new Keyboard(mHostActivity, keyboard);
         mKeyboardView.setKeyboard(mKeyboard);
         mKeyboardView.setPreviewEnabled(keyPreview);
         mKeyboardView.setOnKeyboardActionListener(mOnKeyboardActionListener);
@@ -164,6 +165,13 @@ public class CustomKeyboard {
     public void hideCustomKeyboard() {
         mKeyboardView.setVisibility(View.GONE);
         mKeyboardView.setEnabled(false);
+    }
+
+    public boolean onBackHandle(){
+        if(isCustomKeyboardVisible()){
+            hideCustomKeyboard();
+            return true;
+        } else return false;
     }
 
     /**
