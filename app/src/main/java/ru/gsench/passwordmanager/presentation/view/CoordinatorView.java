@@ -23,5 +23,6 @@ public interface CoordinatorView {
     public void openPINInputView(PINInputPresenter presenter);
     public void editAccountView(EditAccountPresenter presenter);
     public void newPINView(NewPINPresenter presenter);
+    public boolean isViewOpened();
     public void closeCurrentView();
 }

@@ -38,7 +38,7 @@ public class AViewContainer {
         container.removeAllViews();
     }
 
-    private boolean viewOpened(){
+    public boolean viewOpened(){
         return container.getChildCount()!=0;
     }
 

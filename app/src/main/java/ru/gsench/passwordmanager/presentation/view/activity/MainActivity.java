@@ -143,6 +143,11 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
     }
 
     @Override
+    public boolean isViewOpened() {
+        return container.viewOpened();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         permissionManager.onPermissionCallback(requestCode, permissions, grantResults);
     }
@@ -159,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
     @Override
     public void onBackPressed() {
         if(keyboard.onBackHandle()) return;
-        if(container.onBackHandle()) return;
         presenter.onBackPressed();
     }
 

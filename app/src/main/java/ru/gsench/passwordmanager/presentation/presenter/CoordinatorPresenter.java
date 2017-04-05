@@ -61,6 +61,7 @@ public class CoordinatorPresenter {
     }
 
     public void onBackPressed() {
-        view.exit();
+        if(view.isViewOpened()) view.closeCurrentView();
+        else view.exit();
     }
 }
