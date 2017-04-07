@@ -16,19 +16,13 @@ import ru.gsench.passwordmanager.domain.utils.function;
 import ru.gsench.passwordmanager.presentation.presenter.KeyInputPresenter;
 import ru.gsench.passwordmanager.presentation.presenter.SelectBasePresenter;
 
+import static ru.gsench.passwordmanager.domain.interactor.PINInteractor.PIN;
+
 /**
  * Created by grish on 26.02.2017.
  */
 
 public class MainInteractor implements AccountListUseCase, EditAccountUseCase, KeyInputUseCase, NewKeyUseCase, NewPINUseCase, PINInputUseCase, SelectBaseUseCase {
-
-    private static final String ACCOUNT_BASE = "base_path";
-    private static final String KEY = "key";
-    private static final String PIN = "pin";
-    private static final String PIN_TRIES = "pin_tries";
-    private static final String LAST_PIN_TRY = "last_pin_try";
-    private static final long PIN_BLOCK = 30*1000;
-    private static final int PIN_LOCK_TRIES = 3;
 
     private CoordinatorPresenter coordinator;
     public SystemInterface system;
@@ -43,12 +37,12 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
     }
 
     public void selectBase(){
-        String basePath = system.getSavedString(ACCOUNT_BASE, null);
+        String basePath = AccountBaseInteractor.getAccountBasePath(system);
         if(basePath==null){
             coordinator.selectBaseView();
             return;
         }
-        onBaseSelected(basePath);
+        onBaseSelected();
     }
 
     @Override
@@ -135,33 +129,22 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
 
     @Override
     public void onNewPIN(String pin){
-        system.saveString(PIN, pin);
-        system.saveString(KEY, accountSystem.getKey());
+        PINInteractor.onNewPIN(system, pin, accountSystem.getKey());
     }
 
     @Override
-    public void onPINInput(String pin) {
-        long block = isPINBlocked();
-        if(block>0) return;
-
-        if(!pin.equals(system.getSavedString(PIN, null))){
-            system.saveInt(PIN_TRIES, system.getSavedInt(PIN_TRIES, 0)+1);
-            system.saveLong(LAST_PIN_TRY, System.currentTimeMillis());
-        } else {
-            system.saveInt(PIN_TRIES, 0);
-            String key = system.getSavedString(KEY, null);
-            inputCorrectKey(key, null);
-        }
+    public void onPINInput(final String pin) {
+        PINInteractor.onPINInput(system, pin, new function(){
+            @Override
+            public void run(String... params) {
+                inputCorrectKey(params[0], null);
+            }
+        });
     }
 
-    //TODO Make secure
     @Override
     public long isPINBlocked(){
-        int tries = system.getSavedInt(PIN_TRIES, 0);
-        long current = System.currentTimeMillis();
-        long lastTry = system.getSavedLong(LAST_PIN_TRY, current-PIN_BLOCK);
-        if (tries>=PIN_LOCK_TRIES && current-lastTry <= PIN_BLOCK) return PIN_BLOCK - current + lastTry;
-        else return -1;
+        return PINInteractor.isPINBlocked(system);
     }
 
     @Override
@@ -176,15 +159,8 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
 
     @Override
     public void onResetPIN(){
-        resetPIN();
+        PINInteractor.resetPIN(system);
         coordinator.keyInputView();
-    }
-
-    private void resetPIN(){
-        system.removeSaved(KEY);
-        system.removeSaved(PIN);
-        system.removeSaved(PIN_TRIES);
-        system.removeSaved(LAST_PIN_TRY);
     }
 
     @Override
@@ -203,21 +179,18 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
     @Override
     public void onExistingBaseSelected(String path){
         newBaseSelected = true;
-        onBaseSelected(path);
-        system.saveString(ACCOUNT_BASE, path);
+        AccountBaseInteractor.selectBase(path, system);
+        onBaseSelected();
     }
 
-    private void onBaseSelected(String path){
-        byte[] base;
+    private void onBaseSelected(){
         try {
-            base = system.readFileFromPath(path);
+            accountSystem = AccountBaseInteractor.getAccountSystem(system);
         } catch (IOException e) {
             coordinator.unableToReadBaseFile();
             resetBase();
             return;
-        }
-        accountSystem = new AccountSystem(base);
-        if(base.length==0){
+        } catch (AccountBaseInteractor.EmptyBaseException e) {
             coordinator.newKeyView();
             return;
         }
@@ -228,8 +201,8 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
     }
 
     private void resetBase(){
-        system.removeSaved(ACCOUNT_BASE);
-        resetPIN();
+        AccountBaseInteractor.resetBase(system);
+        PINInteractor.resetPIN(system);
         selectBase();
     }
 
@@ -257,33 +230,21 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
         coordinator.openAccountList();
     }
 
-    private final static Object synchronizationStub = new Object();
     private void saveAccountBase(){
-        system.doOnBackground(new function() {
-            @Override
-            public void run(String... params) {
-                synchronized (synchronizationStub){
-                    try {
-                        system.writeFileToPath(accountSystem.encryptSystem(), system.getSavedString(ACCOUNT_BASE, null));
-                    } catch (GeneralSecurityException e) {
-                        system.doOnForeground(new function() {
-                            @Override
-                            public void run(String... params) {
-                                coordinator.unableToEditBaseFile();
-                            }
-                        });
-                    } catch (IOException e) {
-                        system.doOnForeground(new function() {
-                            @Override
-                            public void run(String... params) {
-                                coordinator.unableToEditBaseFile();
-                                resetBase();
-                            }
-                        });
+        AccountBaseInteractor.saveAccountBase(system, accountSystem,
+                new function() {
+                    @Override
+                    public void run(String... params) {
+                        coordinator.unableToEditBaseFile();
                     }
-                }
-            }
-        });
+                },
+                new function() {
+                    @Override
+                    public void run(String... params) {
+                        coordinator.unableToEditBaseFile();
+                        resetBase();
+                    }
+                });
     }
 
 }
