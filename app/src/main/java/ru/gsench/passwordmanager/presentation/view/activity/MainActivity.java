@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import ru.gsench.passwordmanager.R;
@@ -18,7 +21,7 @@ import ru.gsench.passwordmanager.presentation.presenter.NewPINPresenter;
 import ru.gsench.passwordmanager.presentation.presenter.PINInputPresenter;
 import ru.gsench.passwordmanager.presentation.presenter.SelectBasePresenter;
 import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
-import ru.gsench.passwordmanager.presentation.utils.CustomKeyboard;
+import ru.gsench.passwordmanager.presentation.utils.KeyboardPref;
 import ru.gsench.passwordmanager.presentation.view.CoordinatorView;
 import ru.gsench.passwordmanager.presentation.view.aview.AccountListAView;
 import ru.gsench.passwordmanager.presentation.view.aview.EditAccountAView;
@@ -32,19 +35,11 @@ import ru.gsench.passwordmanager.presentation.viewholder.MainViewHolder;
 
 public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
-    /**TODO App Preferences
-     * - keyboard option
-     * - base reselection
-     * - pin setting
-     * - key setting
-     * */
     //TODO Passwords' categories
     //TODO Search
 
-    public static final String APP_PREFERENCES = "AppPreferences";
-
     private MainViewHolder viewHolder;
-    private CustomKeyboard keyboard;
+    private KeyboardPref keyboard;
     private PermissionManager permissionManager;
     private AViewContainer container;
     private AccountListAView accountListView;
@@ -70,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     @Override
     public void init() {
-        keyboard = new CustomKeyboard(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
+        keyboard = new KeyboardPref(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
         keyboard.enableHapticFeedback(true);
     }
 
@@ -116,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==SettingsActivity.SETTINGS) presenter.onSettingsResult();
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -134,6 +130,24 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
     @Override
     public void newPINView(NewPINPresenter presenter){
         new NewPINAView(container, presenter).open();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        presenter.onSettingsBtn();
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void openSettings() {
+        startActivityForResult(new Intent(this, SettingsActivity.class), SettingsActivity.SETTINGS);
     }
 
     @Override

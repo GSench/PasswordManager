@@ -7,6 +7,7 @@ import android.preference.PreferenceFragment;
 
 import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.domain.utils.function;
+import ru.gsench.passwordmanager.presentation.utils.KeyboardPref;
 
 /**
  * Created by grish on 08.04.2017.
@@ -14,13 +15,12 @@ import ru.gsench.passwordmanager.domain.utils.function;
 
 public class SettingsFragment extends PreferenceFragment {
 
+    private function onKeyboardPref, onBasePref, onKeyPref, onPINPref;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
-    }
-
-    public void init(final function onKeyboardPref, final function onBasePref, final function onKeyPref, final function onPINPref){
 
         CheckBoxPreference keyboardPref = (CheckBoxPreference) findPreference(getString(R.string.keyboard_pref));
         Preference basePref = findPreference(getString(R.string.new_base));
@@ -34,6 +34,7 @@ public class SettingsFragment extends PreferenceFragment {
                 return false;
             }
         });
+        keyboardPref.setChecked(KeyboardPref.useCustomKeyboard(getActivity()));
         basePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -55,6 +56,13 @@ public class SettingsFragment extends PreferenceFragment {
                 return false;
             }
         });
+    }
+
+    public void init(function onKeyboardPref, function onBasePref, function onKeyPref, function onPINPref){
+        this.onKeyboardPref=onKeyboardPref;
+        this.onBasePref=onBasePref;
+        this.onKeyPref=onKeyPref;
+        this.onPINPref=onPINPref;
     }
 
 }

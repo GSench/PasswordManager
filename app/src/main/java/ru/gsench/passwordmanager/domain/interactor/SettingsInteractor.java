@@ -61,13 +61,19 @@ public class SettingsInteractor implements NewKeyUseCase, NewPINUseCase, KeyInpu
     @Override
     public void afterNewKeyInput(String newKey) {
         accountSystem.setKey(newKey);
+        final boolean[] ret = new boolean[]{false};
         function error = new function() {
             @Override
             public void run(String... params) {
                 presenter.onSaveBaseError();
+                ret[0]=true;
             }
         };
         AccountBaseInteractor.saveAccountBase(system, accountSystem, error, error);
+        if(ret[0]) return;
+        String pin = system.getSavedString(PIN, null);
+        if(pin!=null) PINInteractor.onNewPIN(system, pin, newKey);
+        presenter.closeView();
     }
 
     @Override

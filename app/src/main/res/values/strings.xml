@@ -56,4 +56,5 @@
     <string name="change_key_title">Change base key</string>
     <string name="change_key_msg">Encrypt base with new key.</string>
     <string name="change_key">change_key</string>
+    <string name="settings">Settings</string>
 </resources>

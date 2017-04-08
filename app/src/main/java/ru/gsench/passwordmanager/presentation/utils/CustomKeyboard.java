@@ -59,7 +59,7 @@ public class CustomKeyboard {
     /** A link to the KeyboardView that is used to render this CustomKeyboard. */
     private KeyboardView mKeyboardView;
     /** A link to the activity that hosts the {@link #mKeyboardView}. */
-    private Activity mHostActivity;
+    protected Activity mHostActivity;
     private boolean hapticFeedback;
     private boolean caps = false;
     private Keyboard mKeyboard;

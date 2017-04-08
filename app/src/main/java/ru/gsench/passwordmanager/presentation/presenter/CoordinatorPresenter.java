@@ -80,4 +80,12 @@ public class CoordinatorPresenter {
         if(view.isViewOpened() && closeOnBackPressed) view.closeCurrentView();
         else view.exit();
     }
+
+    public void onSettingsBtn() {
+        view.openSettings();
+    }
+
+    public void onSettingsResult(){
+        interactor.settingsChanged();
+    }
 }

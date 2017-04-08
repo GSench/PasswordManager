@@ -14,7 +14,7 @@ import ru.gsench.passwordmanager.presentation.presenter.NewPINPresenter;
 import ru.gsench.passwordmanager.presentation.presenter.PINInputPresenter;
 import ru.gsench.passwordmanager.presentation.presenter.SettingsPresenter;
 import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
-import ru.gsench.passwordmanager.presentation.utils.CustomKeyboard;
+import ru.gsench.passwordmanager.presentation.utils.KeyboardPref;
 import ru.gsench.passwordmanager.presentation.view.SettingsView;
 import ru.gsench.passwordmanager.presentation.view.aview.KeyInputAView;
 import ru.gsench.passwordmanager.presentation.view.aview.NewKeyAView;
@@ -29,11 +29,13 @@ import ru.gsench.passwordmanager.presentation.viewholder.SettingsViewHolder;
 
 public class SettingsActivity extends AppCompatActivity implements SettingsView {
 
+    public static final int SETTINGS = 1;
+
     private SettingsViewHolder viewHolder;
     private AViewContainer container;
     private SettingsFragment settingsFragment;
     private SettingsPresenter presenter;
-    private CustomKeyboard keyboard;
+    private KeyboardPref keyboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
         viewHolder = new SettingsViewHolder(this);
         container = new AViewContainer(viewHolder.dialogContent);
         presenter = new SettingsPresenter(new AndroidInterface(this));
+        presenter.setView(this);
         presenter.start();
     }
 
@@ -52,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
                 new function() {
                     @Override
                     public void run(String... params) {
-                        presenter.onKeyPrefBtn();
+                        KeyboardPref.saveKeyboardPref(Boolean.parseBoolean(params[0]), SettingsActivity.this);
                     }
                 },
                 new function() {
@@ -75,7 +78,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
                 }
         );
         getFragmentManager().beginTransaction().replace(R.id.settings_list, settingsFragment).commit();
-        keyboard = new CustomKeyboard(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
+        keyboard = new KeyboardPref(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
         keyboard.enableHapticFeedback(true);
     }
 
@@ -122,4 +125,11 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
     public void onSaveBaseErrorMsg() {
         Toast.makeText(this, R.string.unable_to_edit_file, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onBackPressed() {
+        if(keyboard.onBackHandle()) return;
+        presenter.onBackPressed();
+    }
+
 }

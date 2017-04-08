@@ -42,12 +42,4 @@ public class AViewContainer {
         return container.getChildCount()!=0;
     }
 
-    public boolean onBackHandle() {
-        if(viewOpened()&&currentView.isCloseOnBackPressed()){
-            closeView();
-            return true;
-        }
-        else return false;
-    }
-
 }

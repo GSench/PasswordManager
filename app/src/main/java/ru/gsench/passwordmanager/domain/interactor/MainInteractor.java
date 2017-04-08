@@ -247,4 +247,28 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
                 });
     }
 
+    public void settingsChanged() {
+        String basePath = AccountBaseInteractor.getAccountBasePath(system);
+        if(basePath==null){
+            coordinator.selectBaseView();
+            return;
+        }
+        String oldKey = accountSystem.getKey();
+        try {
+            accountSystem = AccountBaseInteractor.getAccountSystem(system);
+        } catch (IOException e) {
+            coordinator.unableToReadBaseFile();
+            resetBase();
+            return;
+        } catch (AccountBaseInteractor.EmptyBaseException e) {
+            coordinator.newKeyView();
+            return;
+        }
+        inputCorrectKey(oldKey, new function() {
+            @Override
+            public void run(String... params) {
+                onBaseSelected();
+            }
+        });
+    }
 }
