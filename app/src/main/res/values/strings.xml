@@ -44,4 +44,16 @@
     <string name="copy">Copy</string>
     <string name="paste">Paste</string>
     <string name="copied">Text copied to clipboard</string>
+    <string name="keyboard_pref_title">Custom keyboard</string>
+    <string name="keyboard_pref_msg">Custom keyboard provides better security. Turn off if you trust your default keyboard.</string>
+    <string name="keyboard_pref">keyboard_pref</string>
+    <string name="new_base_title">Exit current base</string>
+    <string name="new_base_msg">Reselect password base or create new one.</string>
+    <string name="new_base">new_base</string>
+    <string name="change_pin">change_pin</string>
+    <string name="change_pin_title">Change app PIN</string>
+    <string name="change_pin_msg">Create new PIN for base access.</string>
+    <string name="change_key_title">Change base key</string>
+    <string name="change_key_msg">Encrypt base with new key.</string>
+    <string name="change_key">change_key</string>
 </resources>

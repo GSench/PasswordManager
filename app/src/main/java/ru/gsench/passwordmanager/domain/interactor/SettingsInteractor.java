@@ -1,6 +1,11 @@
 package ru.gsench.passwordmanager.domain.interactor;
 
+import org.xml.sax.SAXException;
+
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import ru.gsench.passwordmanager.domain.SystemInterface;
 import ru.gsench.passwordmanager.domain.account_system.AccountSystem;
@@ -37,10 +42,7 @@ public class SettingsInteractor implements NewKeyUseCase, NewPINUseCase, KeyInpu
     private void onBaseSelected(){
         try {
             accountSystem = AccountBaseInteractor.getAccountSystem(system);
-        } catch (IOException e) {
-            presenter.exit();
-            return;
-        } catch (AccountBaseInteractor.EmptyBaseException e) {
+        } catch (IOException | AccountBaseInteractor.EmptyBaseException e) {
             presenter.exit();
             return;
         }
@@ -74,8 +76,47 @@ public class SettingsInteractor implements NewKeyUseCase, NewPINUseCase, KeyInpu
     }
 
     @Override
-    public void onKeyInput(String key, KeyInputPresenter presenter) {
-
+    public void onKeyInput(final String key, final KeyInputPresenter presenter) {
+        system.doOnBackground(new function() {
+            @Override
+            public void run(String... params) {
+                try {
+                    accountSystem.initSystem(key);
+                } catch (SAXException | IOException e) {
+                    system.doOnForeground(new function() {
+                        @Override
+                        public void run(String... params) {
+                            presenter.unableToParseBase();
+                            resetBase();
+                        }
+                    });
+                    return;
+                } catch (GeneralSecurityException e) {
+                    system.doOnForeground(new function() {
+                        @Override
+                        public void run(String... params) {
+                            presenter.onIncorrectKeyInput();
+                        }
+                    });
+                    return;
+                } catch (ParserConfigurationException e) {
+                    system.doOnForeground(new function() {
+                        @Override
+                        public void run(String... params) {
+                            presenter.unexpectedException();
+                        }
+                    });
+                    return;
+                }
+                system.doOnForeground(new function() {
+                    @Override
+                    public void run(String... params) {
+                        presenter.onCorrectKeyInput();
+                        SettingsInteractor.this.presenter.closeView();
+                    }
+                });
+            }
+        });
     }
 
     private void inputCorrectKey(final String key, final function onException){
@@ -120,7 +161,6 @@ public class SettingsInteractor implements NewKeyUseCase, NewPINUseCase, KeyInpu
         });
     }
 
-    //TODO Make secure
     @Override
     public long isPINBlocked(){
         return PINInteractor.isPINBlocked(system);
