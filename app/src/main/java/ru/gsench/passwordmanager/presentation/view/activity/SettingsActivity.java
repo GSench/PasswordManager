@@ -42,7 +42,6 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         viewHolder = new SettingsViewHolder(this);
-        container = new AViewContainer(viewHolder.dialogContent);
         presenter = new SettingsPresenter(new AndroidInterface(this));
         presenter.setView(this);
         presenter.start();
@@ -80,6 +79,18 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
         getFragmentManager().beginTransaction().replace(R.id.settings_list, settingsFragment).commit();
         keyboard = new KeyboardPref(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
         keyboard.enableHapticFeedback(true);
+        container = new AViewContainer(viewHolder.dialogContent)
+                .setOnCloseListener(new function() {
+                    @Override
+                    public void run(String... params) {
+                        getSupportActionBar().show();
+                    }
+                }).setOnOpenListener(new function() {
+                    @Override
+                    public void run(String... params) {
+                        getSupportActionBar().hide();
+                    }
+                });
     }
 
     @Override

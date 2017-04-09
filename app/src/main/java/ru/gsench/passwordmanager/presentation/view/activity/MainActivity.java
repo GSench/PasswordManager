@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         viewHolder = new MainViewHolder(this);
-        container = new AViewContainer(viewHolder.dialogContent);
         permissionManager = new PermissionManager(this);
         permissionManager.requestBasePermissions(this, new function() {
             @Override
@@ -67,6 +66,18 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
     public void init() {
         keyboard = new KeyboardPref(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
         keyboard.enableHapticFeedback(true);
+        container = new AViewContainer(viewHolder.dialogContent)
+                .setOnCloseListener(new function() {
+                    @Override
+                    public void run(String... params) {
+                        getSupportActionBar().show();
+                    }
+                }).setOnOpenListener(new function() {
+                    @Override
+                    public void run(String... params) {
+                        getSupportActionBar().hide();
+                    }
+                });
     }
 
     @Override
