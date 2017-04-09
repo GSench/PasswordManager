@@ -79,18 +79,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
         getFragmentManager().beginTransaction().replace(R.id.settings_list, settingsFragment).commit();
         keyboard = new KeyboardPref(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
         keyboard.enableHapticFeedback(true);
-        container = new AViewContainer(viewHolder.dialogContent)
-                .setOnCloseListener(new function() {
-                    @Override
-                    public void run(String... params) {
-                        getSupportActionBar().show();
-                    }
-                }).setOnOpenListener(new function() {
-                    @Override
-                    public void run(String... params) {
-                        getSupportActionBar().hide();
-                    }
-                });
+        container = new AViewContainer(viewHolder.dialogContent);
     }
 
     @Override
