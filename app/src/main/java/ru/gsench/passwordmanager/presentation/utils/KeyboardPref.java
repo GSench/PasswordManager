@@ -3,6 +3,8 @@ package ru.gsench.passwordmanager.presentation.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.inputmethodservice.KeyboardView;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 /**
@@ -32,5 +34,13 @@ public class KeyboardPref extends CustomKeyboard {
 
     public static boolean useCustomKeyboard(Context context){
         return context.getSharedPreferences(KEYBOARD_PREF, Context.MODE_PRIVATE).getBoolean(USE_CUSTOM, true);
+    }
+
+    public static void closeSoftKeyboard(Activity act){
+        View view = act.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)act.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

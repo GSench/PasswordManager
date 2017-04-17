@@ -264,6 +264,8 @@ public class MainInteractor implements AccountListUseCase, EditAccountUseCase, K
             coordinator.newKeyView();
             return;
         }
+        newBaseSelected=false;
+        newKeyInput=false;
         inputCorrectKey(oldKey, new function() {
             @Override
             public void run(String... params) {

@@ -231,6 +231,16 @@ public class CustomKeyboard {
         edittext.setOnTouchListener(otl);
     }
 
+    public void unregisterEditText(EditText editText){
+        editText.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+        editText.setInputType(editText.getInputType() | InputType.TYPE_CLASS_TEXT);
+    }
+
     /**
      * Enables or disables the Haptic feedback on keyboard touches
      * @param goEnabled true if you want haptic feedback, falso otherwise

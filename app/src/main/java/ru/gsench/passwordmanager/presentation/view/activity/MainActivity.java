@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     //TODO Passwords' categories
     //TODO Search
-    //TODO Overcome to Toolbar
 
     private MainViewHolder viewHolder;
     private KeyboardPref keyboard;
@@ -65,9 +64,17 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     @Override
     public void init() {
+        setSupportActionBar(viewHolder.toolbar);
         keyboard = new KeyboardPref(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
         keyboard.enableHapticFeedback(true);
-        container = new AViewContainer(viewHolder.dialogContent);
+        container = new AViewContainer(viewHolder.dialogContent)
+                .setOnCloseListener(new function() {
+                    @Override
+                    public void run(String... params) {
+                        if(KeyboardPref.useCustomKeyboard(MainActivity.this)) keyboard.hideCustomKeyboard();
+                        else KeyboardPref.closeSoftKeyboard(MainActivity.this);
+                    }
+                });
     }
 
     @Override
