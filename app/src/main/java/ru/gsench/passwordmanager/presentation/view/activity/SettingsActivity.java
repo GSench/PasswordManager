@@ -79,7 +79,14 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
         getFragmentManager().beginTransaction().replace(R.id.settings_list, settingsFragment).commit();
         keyboard = new KeyboardPref(this, (KeyboardView) findViewById(R.id.keyboard_view), true);
         keyboard.enableHapticFeedback(true);
-        container = new AViewContainer(viewHolder.dialogContent);
+        container = new AViewContainer(viewHolder.dialogContent)
+                .setOnCloseListener(new function() {
+                    @Override
+                    public void run(String... params) {
+                        keyboard.hideCustomKeyboard();
+                        keyboard.closeSoftKeyboard();
+                    }
+                });
     }
 
     @Override
@@ -89,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
 
     @Override
     public void newKeyView(NewKeyPresenter presenter) {
-        NewKeyAView aView = new NewKeyAView(container, presenter);
+        NewKeyAView aView = new NewKeyAView(container, presenter, keyboard);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }
@@ -106,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
 
     @Override
     public void keyInputView(KeyInputPresenter presenter) {
-        KeyInputAView aView = new KeyInputAView(container, presenter);
+        KeyInputAView aView = new KeyInputAView(container, presenter, keyboard);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }

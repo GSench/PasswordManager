@@ -25,6 +25,10 @@ public class KeyboardPref extends CustomKeyboard {
         if(useCustomKeyboard(mHostActivity)) super.registerEditText(edittext, enableClipboard);
     }
 
+    public void registerEditTextAnyway(EditText edittext, boolean enableClipboard){
+        super.registerEditText(edittext, enableClipboard);
+    }
+
     public static void saveKeyboardPref(boolean useCustom, Context context){
         context.getSharedPreferences(KEYBOARD_PREF, Context.MODE_PRIVATE)
                 .edit()
@@ -34,6 +38,14 @@ public class KeyboardPref extends CustomKeyboard {
 
     public static boolean useCustomKeyboard(Context context){
         return context.getSharedPreferences(KEYBOARD_PREF, Context.MODE_PRIVATE).getBoolean(USE_CUSTOM, true);
+    }
+
+    public void closeSoftKeyboard(){
+        View view = mHostActivity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)mHostActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     public static void closeSoftKeyboard(Activity act){

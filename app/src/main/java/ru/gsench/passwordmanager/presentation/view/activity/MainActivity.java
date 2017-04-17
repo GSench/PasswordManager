@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
                 .setOnCloseListener(new function() {
                     @Override
                     public void run(String... params) {
-                        if(KeyboardPref.useCustomKeyboard(MainActivity.this)) keyboard.hideCustomKeyboard();
-                        else KeyboardPref.closeSoftKeyboard(MainActivity.this);
+                        keyboard.hideCustomKeyboard();
+                        keyboard.closeSoftKeyboard();
                     }
                 });
     }
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     @Override
     public void keyInputView(KeyInputPresenter presenter) {
-        KeyInputAView aView = new KeyInputAView(container, presenter);
+        KeyInputAView aView = new KeyInputAView(container, presenter, keyboard);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements CoordinatorView {
 
     @Override
     public void newKeyView(NewKeyPresenter presenter) {
-        NewKeyAView aView = new NewKeyAView(container, presenter);
+        NewKeyAView aView = new NewKeyAView(container, presenter, keyboard);
         keyboard.registerEditText(aView.viewHolder.keyEdit, true);
         aView.open();
     }

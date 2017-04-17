@@ -235,7 +235,7 @@ public class CustomKeyboard {
         editText.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
+                return view.onTouchEvent(motionEvent);
             }
         });
         editText.setInputType(editText.getInputType() | InputType.TYPE_CLASS_TEXT);

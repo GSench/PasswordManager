@@ -2,12 +2,14 @@ package ru.gsench.passwordmanager.presentation.view.aview;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import ru.gsench.passwordmanager.R;
 import ru.gsench.passwordmanager.presentation.presenter.KeyInputPresenter;
 import ru.gsench.passwordmanager.presentation.utils.AView;
 import ru.gsench.passwordmanager.presentation.utils.AViewContainer;
+import ru.gsench.passwordmanager.presentation.utils.KeyboardPref;
 import ru.gsench.passwordmanager.presentation.view.KeyInputView;
 import ru.gsench.passwordmanager.presentation.viewholder.KeyInputViewHolder;
 
@@ -20,8 +22,11 @@ public class KeyInputAView extends AView implements KeyInputView {
     public KeyInputViewHolder viewHolder;
     private KeyInputPresenter presenter;
 
-    public KeyInputAView(AViewContainer container, KeyInputPresenter presenter){
+    private KeyboardPref keyboard;
+
+    public KeyInputAView(AViewContainer container, KeyInputPresenter presenter, KeyboardPref keyboard){
         super(container);
+        this.keyboard=keyboard;
         viewHolder = new KeyInputViewHolder(context, parent);
         this.presenter=presenter;
         presenter.setView(this);
@@ -41,6 +46,21 @@ public class KeyInputAView extends AView implements KeyInputView {
             }
         });
         viewHolder.message.setText(context.getString(R.string.input_key));
+        if(KeyboardPref.useCustomKeyboard(context)||keyboard==null){
+            viewHolder.customKeyboard.setVisibility(View.GONE);
+            return;
+        }
+        viewHolder.customKeyboard.setChecked(false);
+        viewHolder.customKeyboard.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(keyboard==null) return;
+                keyboard.hideCustomKeyboard();
+                keyboard.closeSoftKeyboard();
+                if(b) keyboard.registerEditTextAnyway(viewHolder.keyEdit, true);
+                else keyboard.unregisterEditText(viewHolder.keyEdit);
+            }
+        });
     }
 
     @Override
