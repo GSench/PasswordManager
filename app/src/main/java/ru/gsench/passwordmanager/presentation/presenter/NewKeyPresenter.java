@@ -1,6 +1,6 @@
 package ru.gsench.passwordmanager.presentation.presenter;
 
-import ru.gsench.passwordmanager.domain.interactor.NewKeyUseCase;
+import ru.gsench.passwordmanager.domain.usecase.NewKeyUseCase;
 import ru.gsench.passwordmanager.presentation.view.NewKeyView;
 
 /**

@@ -1,6 +1,6 @@
 package ru.gsench.passwordmanager.presentation.presenter;
 
-import ru.gsench.passwordmanager.domain.interactor.PINInputUseCase;
+import ru.gsench.passwordmanager.domain.usecase.PINInputUseCase;
 import ru.gsench.passwordmanager.domain.utils.function;
 import ru.gsench.passwordmanager.presentation.view.PINInputView;
 

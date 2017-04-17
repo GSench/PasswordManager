@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager.domain.interactor;
+package ru.gsench.passwordmanager.domain.usecase;
 
 /**
  * Created by grish on 01.04.2017.

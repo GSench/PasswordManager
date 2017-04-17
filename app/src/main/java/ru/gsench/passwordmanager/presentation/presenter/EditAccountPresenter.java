@@ -1,7 +1,7 @@
 package ru.gsench.passwordmanager.presentation.presenter;
 
 import ru.gsench.passwordmanager.domain.account_system.Account;
-import ru.gsench.passwordmanager.domain.interactor.EditAccountUseCase;
+import ru.gsench.passwordmanager.domain.usecase.EditAccountUseCase;
 import ru.gsench.passwordmanager.presentation.utils.RandomPassword;
 import ru.gsench.passwordmanager.presentation.view.EditAccountView;
 

@@ -4,7 +4,7 @@ import android.os.Environment;
 
 import java.io.File;
 
-import ru.gsench.passwordmanager.domain.interactor.SelectBaseUseCase;
+import ru.gsench.passwordmanager.domain.usecase.SelectBaseUseCase;
 import ru.gsench.passwordmanager.presentation.view.SelectBaseView;
 
 /**

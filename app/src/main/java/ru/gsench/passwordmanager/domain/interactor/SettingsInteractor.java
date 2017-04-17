@@ -9,6 +9,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import ru.gsench.passwordmanager.domain.SystemInterface;
 import ru.gsench.passwordmanager.domain.account_system.AccountSystem;
+import ru.gsench.passwordmanager.domain.usecase.KeyInputUseCase;
+import ru.gsench.passwordmanager.domain.usecase.NewKeyUseCase;
+import ru.gsench.passwordmanager.domain.usecase.NewPINUseCase;
+import ru.gsench.passwordmanager.domain.usecase.PINInputUseCase;
 import ru.gsench.passwordmanager.domain.utils.function;
 import ru.gsench.passwordmanager.presentation.presenter.KeyInputPresenter;
 import ru.gsench.passwordmanager.presentation.presenter.SettingsPresenter;

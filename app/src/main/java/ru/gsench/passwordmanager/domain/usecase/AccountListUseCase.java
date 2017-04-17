@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager.domain.interactor;
+package ru.gsench.passwordmanager.domain.usecase;
 
 import java.util.ArrayList;
 

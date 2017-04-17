@@ -1,4 +1,4 @@
-package ru.gsench.passwordmanager.domain.interactor;
+package ru.gsench.passwordmanager.domain.usecase;
 
 import ru.gsench.passwordmanager.presentation.presenter.KeyInputPresenter;
 
