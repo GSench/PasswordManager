@@ -1,7 +1,9 @@
 package ru.gsench.passwordmanager.presentation.view.activity;
 
+import android.content.DialogInterface;
 import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -131,6 +133,40 @@ public class SettingsActivity extends AppCompatActivity implements SettingsView 
     @Override
     public void onSaveBaseErrorMsg() {
         Toast.makeText(this, R.string.unable_to_edit_file, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void changeKeyConfirmDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.change_key_title)
+                .setMessage(R.string.change_base_key)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                        presenter.onChangeKeyConfirm();
+                    }
+                })
+                .setNeutralButton(R.string.cancel, null)
+                .create()
+                .show();
+    }
+
+    @Override
+    public void changeBaseConfirmDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.new_base_title)
+                .setMessage(R.string.change_base_msg)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                        presenter.onChangeBaseConfirm();
+                    }
+                })
+                .setNeutralButton(R.string.cancel, null)
+                .create()
+                .show();
     }
 
     @Override

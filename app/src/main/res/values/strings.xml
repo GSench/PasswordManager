@@ -57,4 +57,6 @@
     <string name="change_key_msg">Encrypt base with new key.</string>
     <string name="change_key">change_key</string>
     <string name="settings">Settings</string>
+    <string name="change_base_msg">Current base won\'t be deleted. PIN will be reset (if exist).</string>
+    <string name="change_base_key">Current base will be encrypted with new key. Od key will be unavailable.</string>
 </resources>

@@ -44,8 +44,7 @@ public class SettingsPresenter {
     }
 
     public void onBasePrefBtn(){
-        interactor.resetBase();
-        view.exit();
+        view.changeBaseConfirmDialog();
     }
 
     public void onPINPrefBtn(){
@@ -54,8 +53,7 @@ public class SettingsPresenter {
     }
 
     public void onKeyPrefBtn(){
-        view.newKeyView(new NewKeyPresenter(interactor));
-        closeOnBackPressed = true;
+        view.changeKeyConfirmDialog();
     }
 
     public void closeView(){
@@ -71,4 +69,13 @@ public class SettingsPresenter {
         view.exit();
     }
 
+    public void onChangeBaseConfirm() {
+        interactor.resetBase();
+        view.exit();
+    }
+
+    public void onChangeKeyConfirm() {
+        view.newKeyView(new NewKeyPresenter(interactor));
+        closeOnBackPressed = true;
+    }
 }

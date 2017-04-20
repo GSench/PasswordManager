@@ -20,4 +20,6 @@ public interface SettingsView {
     public boolean isViewOpened();
     public void closeCurrentView();
     public void onSaveBaseErrorMsg();
+    public void changeKeyConfirmDialog();
+    public void changeBaseConfirmDialog();
 }
