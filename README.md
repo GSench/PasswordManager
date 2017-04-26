@@ -9,10 +9,10 @@ Main features:
   - Create new password base or select existing one
   - Build-in keyboard (for better security)
   - Base access through PIN
+  - Settings
 
 Future features:
   - Beautiful design :-)
-  - Settings
   - Passwords' categories
 
 ## Credits
